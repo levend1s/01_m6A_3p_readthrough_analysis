@@ -1,0 +1,39 @@
+#!/bin/bash
+
+source ./env.sh
+
+# INPUTS: 
+# - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam
+# OUTPUTS:
+
+# - ${SAMPLE}_to_pfal_${THRESHOLD}.bed
+# - ${SAMPLE}_to_pfal_${THRESHOLD}.log
+# - ${SAMPLE}_to_pfal_${THRESHOLD}.${PERCENT_CUTOFF}p.${TYPE}.bed
+
+# Define all sample names here
+SAMPLES=("28C1" "28C2" "28K1" "28K2" "32C1" "32C2" "32K1" "32K2" "36C1" "36C2" "36K1" "36K2")
+
+TYPES=("a" "m" "17802" "17596")  # m6A, m5C, pseudouridine, inosine
+PERCENT_CUTOFF=0
+
+OUTDIR=$(pwd)/02_generating_bedmethyls_output
+mkdir -p ${OUTDIR}
+
+for SAMPLE in "${SAMPLES[@]}"; do
+    echo "Processing ${SAMPLE}..."
+
+    # Generating bedmethyls:
+    THRESHOLD=0.95
+    ${MODKIT_PATH} pileup --filter-threshold ${THRESHOLD} ${FILEPATH}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed --log-filepath ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.log
+    
+    for TYPE in "${TYPES[@]}"; do
+        cat ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed | awk -v TYPE=$TYPE -v PERCENT_CUTOFF=$PERCENT_CUTOFF '{if ($4 == TYPE && $11 > PERCENT_CUTOFF) print $0 }' > ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.${PERCENT_CUTOFF}p.${TYPE}.bed
+    done
+
+    THRESHOLD=0.65
+    ${MODKIT_PATH} pileup --filter-threshold ${THRESHOLD} ${FILEPATH}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed --log-filepath ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.log
+    
+    for TYPE in "${TYPES[@]}"; do
+        cat ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed | awk -v TYPE=$TYPE -v PERCENT_CUTOFF=$PERCENT_CUTOFF '{if ($4 == TYPE && $11 > PERCENT_CUTOFF) print $0 }' > ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.${PERCENT_CUTOFF}p.${TYPE}.bed
+    done
+done

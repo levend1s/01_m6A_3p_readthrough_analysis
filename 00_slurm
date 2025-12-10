@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH -p gpu-h100
+#SBATCH --gres=gpu:1
+#SBATCH --time=0-12:00:00
+#SBATCH --mem=128G
+#SBATCH --cpus-per-task=64
+#SBATCH --ntasks=1
+
+SAMPLE="28C1"
+DORADO="/data/gpfs/projects/punim0875/josh/dorado-0.8.3-linux-x64/bin/dorado"
+RNASEQ_PROJ_DIR="/data/gpfs/projects/punim0875/josh/projects/proj-5210_ralphlab-1128.4.524/rnaseq/nanopore/METTL3_KS_TIME_SERIES"
+READS="${RNASEQ_PROJ_DIR}/${SAMPLE}/20240826_1458_MN24403_FAZ60852_d9c3cda9/pod5/"
+OUTDIR="/data/gpfs/projects/punim0875/josh/dorado_0.8.3_basecalled/"
+UBAM="${OUTDIR}/${SAMPLE}.bam"
+
+# https://plasmodb.org/common/downloads/release-67/Pfalciparum3D7/
+PFAL_FASTA="${PROJ_DIR}/references/Pfalciparum3D7/fasta/data/PlasmoDB-67_Pfalciparum3D7_Genome.fasta"
+# https://ftp.ensembl.org/pub/release-112/gtf/homo_sapiens/Homo_sapiens.GRCh38.112.gtf.gz
+HUMAN_FASTA="${PROJ_DIR}/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+# https://ftp.ensembl.org/pub/release-112/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.112.gtf.gz
+YEAST_FASTA="${PROJ_DIR}/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa"
+
+$DORADO basecaller --emit-moves --estimate-poly-a --verbose sup,pseU,m5C,inosine_m6A $READS > $UBAM
+
+$DORADO aligner $PFAL_FASTA $UBAM > "${OUTDIR}/${SAMPLE}_to_pfal.bam"
+$DORADO aligner $HUMAN_FASTA $UBAM > "${OUTDIR}/${SAMPLE}_to_humans.bam"
+$DORADO aligner $YEAST_FASTA $UBAM > "${OUTDIR}/${SAMPLE}_to_yeast.bam"
+
+# And monitored it with:
+# sbatch nanopore_basecall_and_align.slurm
+# squeue --me

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# INPUTS: 
+# - ${SAMPLE}_to_pfal.bam
+# OUTPUTS:
+
+# - ${SAMPLE}_to_pfal.50MAPQ.bam
+# - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam
+# - ${SAMPLE}_to_pfal.50MAPQ.sorted.bai
+
+# Define all sample names here
+SAMPLES=("28C1" "28C2" "28K1" "28K2" "32C1" "32C2" "32K1" "32K2" "36C1" "36C2" "36K1" "36K2")
+
+OUTDIR=$(pwd)/01_BAM_filtering_output
+mkdir -p ${OUTDIR}
+
+for SAMPLE in "${SAMPLES[@]}"; do
+    echo "Processing ${SAMPLE}..."
+
+    samtools view -bq 50 ${BAMDIR}/${SAMPLE}_to_pfal.bam > ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.bam
+    samtools sort ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.bam > ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam
+    samtools index ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam
+    samtools quickcheck ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam
+
+    echo "${SAMPLE}: filtered all ok"
+done

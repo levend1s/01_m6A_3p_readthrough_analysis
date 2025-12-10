@@ -1,0 +1,91 @@
+#!/bin/bash
+
+set -e
+
+source ./env.sh
+source ${RQC_DIR}/env/bin/activate
+
+# INPUTS: 
+# - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam
+# - ${ANNOTATION}
+
+# OUTPUTS:
+# - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam.featureCounts
+# - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam.featureCounts
+
+PADDING=500
+READ_DEPTH=0
+M6A_RATIO=0.5
+POLY_A_FILTER=10
+
+OUTDIR=$(pwd)/10_coverage_plots_output
+mkdir -p ${OUTDIR}
+
+# IGV screenshot, hide small indels (<100bp), show m6A > 0.95p
+
+# comparing all mod types
+ALL_MODS_SAMPLES=${OUTDIR}/all_mods_samples.txt
+rm -f ${ALL_MODS_SAMPLES}
+touch ${ALL_MODS_SAMPLES}
+echo "inosine_read_depth control bam ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam" >> ${ALL_MODS_SAMPLES}
+echo "inosine_inosine control bedmethyl ${BEDMETHYL_DIR}/28C1_to_pfal_0.65.0p.17596.bed" >> ${ALL_MODS_SAMPLES}
+echo "m6A_read_depth control bam ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam" >> ${ALL_MODS_SAMPLES}
+echo "m6A_m6A control bedmethyl ${BEDMETHYL_DIR}/28C1_to_pfal_0.65.0p.a.bed" >> ${ALL_MODS_SAMPLES}
+echo "pseudouridine_read_depth control bam ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam" >> ${ALL_MODS_SAMPLES}
+echo "pseudouridine_pseudouridine control bedmethyl ${BEDMETHYL_DIR}/28C1_to_pfal_0.65.0p.17802.bed" >> ${ALL_MODS_SAMPLES}
+echo "m5C_read_depth control bam ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam" >> ${ALL_MODS_SAMPLES}
+echo "m5C_m5C control bedmethyl ${BEDMETHYL_DIR}/28C1_to_pfal_0.65.0p.m.bed" >> ${ALL_MODS_SAMPLES}
+# general coverage and m6a coverage plots
+M6A_SAMPLES=${OUTDIR}/m6a_samples.txt
+rm -f ${M6A_SAMPLES}
+touch ${M6A_SAMPLES}
+echo "28C1_read_depth control bam ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam" >> ${M6A_SAMPLES}
+echo "28C2_read_depth control bam ${FILTERED_BAMDIR}/28C2_to_pfal.50MAPQ.sorted.bam" >> ${M6A_SAMPLES}
+echo "28K1_read_depth knock-sideways bam ${FILTERED_BAMDIR}/28K1_to_pfal.50MAPQ.sorted.bam" >> ${M6A_SAMPLES}
+echo "28K2_read_depth knock-sideways bam ${FILTERED_BAMDIR}/28K2_to_pfal.50MAPQ.sorted.bam" >> ${M6A_SAMPLES}
+echo "28C1_m6A_0.95 control bedmethyl ${BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.bed" >> ${M6A_SAMPLES}
+echo "28C2_m6A_0.95 control bedmethyl ${BEDMETHYL_DIR}/28C2_to_pfal_0.95.0p.a.bed" >> ${M6A_SAMPLES}
+echo "28K1_m6A_0.95 knock-sideways bedmethyl ${BEDMETHYL_DIR}/28K1_to_pfal_0.95.0p.a.bed" >> ${M6A_SAMPLES}
+echo "28K2_m6A_0.95 knock-sideways bedmethyl ${BEDMETHYL_DIR}/28K2_to_pfal_0.95.0p.a.bed" >> ${M6A_SAMPLES}
+
+M6A_SINGLE_SAMPLES=${OUTDIR}/m6a_single_samples.txt
+rm -f ${M6A_SINGLE_SAMPLES}
+touch ${M6A_SINGLE_SAMPLES}
+echo "28C1_read_depth control bam ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam" >> ${M6A_SINGLE_SAMPLES}
+echo "28C1_m6A_0.95 control bedmethyl ${BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.bed" >> ${M6A_SINGLE_SAMPLES}
+
+python ${RQC_PATH} plot_coverage -m subfeature -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --ids PF3D7_1123900.1 \
+    -i ${ALL_MODS_SAMPLES} --separate_y_axes -o ${OUTDIR}/PF3D7_1123900_mod_compare.eps --plot_type bar
+python ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 0 --padding_ratio 0.1 --ids PF3D7_1123900.1 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1338200.1.eps --mod_normalisation other
+
+# B: coverage (top PC1 contributors)
+# the trick for padding here is padding_ratio = padding / (gene length + padding)
+
+python rqc.py plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 0 --padding_ratio 0.1 --ids PF3D7_1237700.1 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1237700.1.eps --mod_normalisation other
+python rqc.py plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 300 --padding_ratio 0.12 --ids PF3D7_0309600.1 \
+    -i ${M6A_SAMPLES} --mod_normalisation other -o ${OUTDIR}/PF3D7_0309600.1.eps
+python rqc.py plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 300 --padding_ratio 0.18 --ids PF3D7_1128200.1 \
+    -i ${M6A_SAMPLES} --mod_normalisation other -o ${OUTDIR}/PF3D7_1128200.1.eps
+
+# F: nanopore offset from canonical PAS
+awk '$6 != 0 {print $1"\t"$2"\t"$6"\t"$6+1"\t"$3"\t"0"\t"$4}' ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv > ${OUTDIR}/28hpi_canonical_pas.tsv
+awk '$6 != 0 {print $1"\t"$2"\t"$5"\t"$5+1"\t"$3"\t"0"\t"$4}' ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv > ${OUTDIR}/28hpi_3p_annotation.tsv
+awk 'NR==1 {print "contig\tID\tstart\tend\ttype\tscore\tstrand"; next} {print}' ${OUTDIR}/28hpi_canonical_pas.tsv > temp.tsv && mv temp.tsv ${OUTDIR}/28hpi_canonical_pas.tsv
+awk 'NR==1 {print "contig\tID\tstart\tend\ttype\tscore\tstrand"; next} {print}' ${OUTDIR}/28hpi_3p_annotation.tsv > temp.tsv && mv temp.tsv ${OUTDIR}/28hpi_3p_annotation.tsv
+
+python ${RQC_PATH} calculate_offsets -d 1000 -r ${OUTDIR}/28hpi_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv \
+    -i m6a ${GLORI_X_NANOPORE_DIR}/nanopore_28u32u36.bed annotation_three_p ${OUTDIR}/28hpi_3p_annotation.tsv
+python ${RQC_PATH} plot_relative_distance -l "canonical PA" -d 1000 -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.eps
+
+# G: m6A specific analysis
+python ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 100 --padding_ratio 0.1 --ids PF3D7_0402000.1 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_0402000.1.eps --mod_normalisation other --plot_type bar --alpha 1
+python ${RQC_PATH} m6A_specific_tes_analysis -a ${ANNOTATION_FILE} -i ${M6A_SINGLE_SAMPLES} --ids PF3D7_0402000.1 --poly_a_filter 10 -d 10 \
+    --separate_mod_tracks --offset_padding 1000 --offset 114415
+
+python ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 1823 --padding_ratio 0.25 --ids PF3D7_1439700 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1439700.1.eps --mod_normalisation other --plot_type bar --alpha 1
+python ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 2106 --padding_ratio 0.33 --ids PF3D7_0518300 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_0518300.1.eps --mod_normalisation other --plot_type bar --alpha 1

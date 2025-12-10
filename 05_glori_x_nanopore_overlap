@@ -1,0 +1,177 @@
+#!/bin/sh
+set -e
+
+source ./env.sh
+source ${RQC_DIR}/env/bin/activate
+
+# INPUTS: 
+# - ${BEDMETHYL_DIR}/${SAMPLE}_to_pfal_0.95.0p.a.bed
+# - ${GLORI_DIR}/glori-seq_${TIMEPOINT}hpi.tsv
+
+# OUTPUTS:
+# - DRACH_SITES.bed
+# - nanopore_${TIMEPOINT}.bed
+# - glori_${TIMEPOINT}.bed
+
+READ_DEPTH=15
+M6A_RATIO=0.25
+
+OUTDIR=$(pwd)/05_glori_x_nanopore_overlap_output
+mkdir -p ${OUTDIR}
+
+TIMEPOINTS=("28" "32" "36")
+
+# # ---------- FIND DRACH SITES ---------- #
+python ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -o ${OUTDIR}/DRACH_SITES.tsv -m "[AGT][AG]AC[ACT]"
+tail -n +2 ${OUTDIR}/DRACH_SITES.tsv | awk '{print $1"\t"$2-1"\t"$3-1"\t"$4"\t"$5"\t"$6}' | sort -k1,1 -k2,2n > ${OUTDIR}/DRACH_SITES.bed
+awk '{mid=int(($2+$3)/2); print $1"\t"mid"\t"mid+1"\t"$4"\t"$5"\t"$6}' ${OUTDIR}/DRACH_SITES.bed > ${OUTDIR}/DRACH_middle.bed
+
+# # ---------- NANOPORE BEDMETHYL PROCESSING ---------- #
+# FILTER BEDMETHYLS FOR 15X COV AND 25% MOD PROP
+echo "Processing 28hpi samples ..."
+awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.bed > ${OUTDIR}/nanopore_28.temp.bed
+awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/28C2_to_pfal_0.95.0p.a.bed >> ${OUTDIR}/nanopore_28.temp.bed
+sort -k1,1 -k2,2n ${OUTDIR}/nanopore_28.temp.bed | uniq > ${OUTDIR}/nanopore_28.bed
+
+echo "Processing 32hpi samples ..."
+awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/32C1_to_pfal_0.95.0p.a.bed > ${OUTDIR}/nanopore_32.temp.bed
+awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/32C2_to_pfal_0.95.0p.a.bed >> ${OUTDIR}/nanopore_32.temp.bed
+sort -k1,1 -k2,2n ${OUTDIR}/nanopore_32.temp.bed | uniq > ${OUTDIR}/nanopore_32.bed
+
+echo "Processing 36hpi samples ..."
+awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/36C1_to_pfal_0.95.0p.a.bed > ${OUTDIR}/nanopore_36.temp.bed
+awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/36C2_to_pfal_0.95.0p.a.bed >> ${OUTDIR}/nanopore_36.temp.bed
+sort -k1,1 -k2,2n ${OUTDIR}/nanopore_36.temp.bed | uniq > ${OUTDIR}/nanopore_36.bed
+
+# # FIND UNION
+echo "Finding nanopore union ..."
+cat ${OUTDIR}/nanopore_28.bed > ${OUTDIR}/nanopore_28u32u36.temp.bed
+cat ${OUTDIR}/nanopore_32.bed >> ${OUTDIR}/nanopore_28u32u36.temp.bed
+cat ${OUTDIR}/nanopore_36.bed >> ${OUTDIR}/nanopore_28u32u36.temp.bed
+sort -k1,1 -k2,2n ${OUTDIR}/nanopore_28u32u36.temp.bed | uniq > ${OUTDIR}/nanopore_28u32u36.bed
+
+# # FIND INTERSECTIONS
+echo "Finding nanopore intersections ..."
+bedtools intersect -u -s -a ${OUTDIR}/nanopore_28.bed -b ${OUTDIR}/nanopore_32.bed | bedtools intersect -u -s -a - -b ${OUTDIR}/nanopore_36.bed | sort -k1,1 -k2,2n | uniq > ${OUTDIR}/nanopore_28i32i36.bed
+
+# # ---------- GLORI-SEQ BED PROCESSING ---------- #
+# # I've copied the chromosome, position and strand columns into a TSV, I now need to write a line that converts this 3 column tsv into a bed file. Use the below:
+echo "Processing GLORI-seq samples ..."
+cat ${GLORI_DIR}/glori-seq_12hpi.tsv | awk '{print $1"\t"$2-1"\t"$2"\ta\t0\t"$3}' | sort -k1,1 -k2,2n > ${OUTDIR}/glori_12.bed
+cat ${GLORI_DIR}/glori-seq_24hpi.tsv | awk '{print $1"\t"$2-1"\t"$2"\ta\t0\t"$3}' | sort -k1,1 -k2,2n > ${OUTDIR}/glori_24.bed
+cat ${GLORI_DIR}/glori-seq_48hpi.tsv | awk '{print $1"\t"$2-1"\t"$2"\ta\t0\t"$3}' | sort -k1,1 -k2,2n > ${OUTDIR}/glori_48.bed
+
+# # FIND UNION
+echo "Finding GLORI-seq union ..."
+cat ${OUTDIR}/glori_12.bed > ${OUTDIR}/glori_12u24u48.temp.bed
+cat ${OUTDIR}/glori_24.bed >> ${OUTDIR}/glori_12u24u48.temp.bed
+cat ${OUTDIR}/glori_48.bed >> ${OUTDIR}/glori_12u24u48.temp.bed
+sort -k1,1 -k2,2n ${OUTDIR}/glori_12u24u48.temp.bed | uniq > ${OUTDIR}/glori_12u24u48.bed
+
+# # FIND INTERSECTIONS
+echo "Finding GLORI-seq intersections ..."
+bedtools intersect -u -s -a ${OUTDIR}/glori_12.bed -b ${OUTDIR}/glori_24.bed | bedtools intersect -u -s -a - -b ${OUTDIR}/glori_48.bed | sort -k1,1 -k2,2n | uniq > ${OUTDIR}/glori_12i24i48.bed
+
+# # ---------- GLORI X NANOPORE ANALYSIS ---------- #
+# # FIND GLORI X NANOPORE INTERSECTIONS
+echo "Finding GLORI-seq X nanopore intersections ..."
+bedtools intersect -u -s -a ${OUTDIR}/glori_12i24i48.bed -b ${OUTDIR}/nanopore_28i32i36.bed > ${OUTDIR}/glori_nanopore_intersection_intersection.bed
+bedtools intersect -u -s -a ${OUTDIR}/nanopore_28u32u36.bed -b ${OUTDIR}/glori_12u24u48.bed > ${OUTDIR}/glori_nanopore_union_intersection.bed
+
+echo "Separating DRACH and non-DRACH m6A sites ..."
+
+bedtools intersect -u -s -a ${OUTDIR}/nanopore_28u32u36.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/nanopore_drach_m6A_sites_28u32u36.bed
+bedtools intersect -v -s -a ${OUTDIR}/nanopore_28u32u36.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/nanopore_non_drach_m6A_sites_28u32u36.bed
+
+bedtools intersect -u -s -a ${OUTDIR}/glori_12u24u48.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/glori_non_drach_m6A_sites_12u24u48.bed
+bedtools intersect -v -s -a ${OUTDIR}/glori_12u24u48.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/glori_drach_m6A_sites_12u24u48.bed
+
+echo "All done!"
+
+# # ---------- CLEAN UP TEMP FILES ---------- #
+rm -f ${OUTDIR}/nanopore_28u32u36.temp.bed
+rm -f ${OUTDIR}/glori_12u24u48.temp.bed
+rm -f ${OUTDIR}/nanopore_28.temp.bed
+rm -f ${OUTDIR}/nanopore_32.temp.bed
+rm -f ${OUTDIR}/nanopore_36.temp.bed
+echo "Temporary files removed."
+
+# ---------- PRINT OUT RESULTS ---------- #
+printf "\---------- TIMEPOINT COUNTS ----------/ \n"
+printf "GLORI 12hpi count:                         $(wc -l < ${OUTDIR}/glori_12.bed)\n"
+printf "GLORI 24hpi count:                         $(wc -l < ${OUTDIR}/glori_24.bed)\n"
+printf "GLORI 48hpi count:                         $(wc -l < ${OUTDIR}/glori_48.bed)\n"
+printf "\n" 
+
+printf "Nanopore 28hpi count:                      $(wc -l < ${OUTDIR}/nanopore_28.bed)\n"
+printf "Nanopore 32hpi count:                      $(wc -l < ${OUTDIR}/nanopore_32.bed)\n"
+printf "Nanopore 36hpi count:                      $(wc -l < ${OUTDIR}/nanopore_36.bed)\n"
+printf "\n"
+
+printf "\---------- NANOPORE VENN ----------/ \n"
+printf "Nanopore 32hpi only count:                 $(bedtools intersect -v -s -a ${OUTDIR}/nanopore_32.bed -b ${OUTDIR}/nanopore_28.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/nanopore_36.bed | wc -l)\n"
+printf "Nanopore 36hpi only count:                 $(bedtools intersect -v -s -a ${OUTDIR}/nanopore_36.bed -b ${OUTDIR}/nanopore_32.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/nanopore_28.bed | wc -l)\n"
+printf "Nanopore 28hpi and 32hpi only count:       $(bedtools intersect -u -s -a ${OUTDIR}/nanopore_28.bed -b ${OUTDIR}/nanopore_32.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/nanopore_36.bed | wc -l)\n"
+printf "Nanopore 28hpi and 36hpi only count:       $(bedtools intersect -u -s -a ${OUTDIR}/nanopore_28.bed -b ${OUTDIR}/nanopore_36.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/nanopore_32.bed | wc -l)\n"
+printf "Nanopore 32hpi and 36hpi only count:       $(bedtools intersect -u -s -a ${OUTDIR}/nanopore_32.bed -b ${OUTDIR}/nanopore_36.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/nanopore_28.bed | wc -l)\n"
+printf "Nanopore 28hpi,32hpi,36hpi only count:     $(bedtools intersect -u -s -a ${OUTDIR}/nanopore_28.bed -b ${OUTDIR}/nanopore_32.bed | bedtools intersect -u -s -a - -b ${OUTDIR}/nanopore_36.bed | wc -l)\n"
+printf "\n"
+
+printf "\---------- GLORI-seq VENN ----------/ \n"
+printf "GLORI-seq 12hpi only count:                $(bedtools intersect -v -s -a ${OUTDIR}/glori_12.bed -b ${OUTDIR}/glori_24.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/glori_48.bed | wc -l)\n"
+printf "GLORI-seq 24hpi only count:                $(bedtools intersect -v -s -a ${OUTDIR}/glori_24.bed -b ${OUTDIR}/glori_12.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/glori_48.bed | wc -l)\n"
+printf "GLORI-seq 48hpi only count:                $(bedtools intersect -v -s -a ${OUTDIR}/glori_48.bed -b ${OUTDIR}/glori_12.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/glori_24.bed | wc -l)\n"
+printf "GLORI-seq 12hpi and 24hpi only count:      $(bedtools intersect -u -s -a ${OUTDIR}/glori_12.bed -b ${OUTDIR}/glori_24.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/glori_48.bed | wc -l)\n"
+printf "GLORI-seq 12hpi and 48hpi only count:      $(bedtools intersect -u -s -a ${OUTDIR}/glori_12.bed -b ${OUTDIR}/glori_48.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/glori_24.bed | wc -l)\n"
+printf "GLORI-seq 24hpi and 48hpi only count:      $(bedtools intersect -u -s -a ${OUTDIR}/glori_24.bed -b ${OUTDIR}/glori_48.bed | bedtools intersect -v -s -a - -b ${OUTDIR}/glori_12.bed | wc -l)\n"
+printf "GLORI-seq 12hpi,24hpi,48hpi only count:    $(bedtools intersect -u -s -a ${OUTDIR}/glori_12.bed -b ${OUTDIR}/glori_24.bed | bedtools intersect -u -s -a - -b ${OUTDIR}/glori_48.bed | wc -l)\n"
+printf "\n"
+
+printf "\---------- TOTAL DETECTED ACROSS ALL TIMEPOINTS ----------/ \n"
+printf "Nanopore union count:                      $(wc -l < ${OUTDIR}/nanopore_28u32u36.bed)\n"
+printf "GLORI-seq union count:                     $(wc -l < ${OUTDIR}/glori_12u24u48.bed)\n"
+printf "Nanopore only count:                       $(bedtools intersect -v -s -a ${OUTDIR}/nanopore_28u32u36.bed -b ${OUTDIR}/glori_12u24u48.bed | wc -l)\n"
+printf "GLORI-seq only count:                      $(bedtools intersect -v -s -a ${OUTDIR}/glori_12u24u48.bed -b ${OUTDIR}/nanopore_28u32u36.bed | wc -l)\n"
+printf "GLORI-seq X Nanopore union count:          $(wc -l < ${OUTDIR}/glori_nanopore_union_intersection.bed)\n"
+printf "\n"
+
+printf "\---------- ONLY SITES PRESENT AT ALL TIMEPOINTS ----------/ \n"
+printf "Nanopore intersection count:               $(wc -l < ${OUTDIR}/nanopore_28i32i36.bed)\n"
+printf "GLORI-seq intersection count:              $(wc -l < ${OUTDIR}/glori_12i24i48.bed)\n"
+printf "Nanopore intersection only count:          $(bedtools intersect -v -s -a ${OUTDIR}/nanopore_28i32i36.bed -b ${OUTDIR}/glori_12i24i48.bed | wc -l)\n"
+printf "GLORI-seq intersection only count:         $(bedtools intersect -v -s -a ${OUTDIR}/glori_12i24i48.bed -b ${OUTDIR}/nanopore_28i32i36.bed | wc -l)\n"
+printf "GLORI-seq X Nanopore intersection count:   $(wc -l < ${OUTDIR}/glori_nanopore_intersection_intersection.bed)\n"
+printf "\n"
+
+printf "\---------- TOTAL DETECTED AT ALL TIMEPOINTS SPLIT BY DRACHS ----------/ \n"
+printf "Nanopore DRACH count:                      $(wc -l < ${OUTDIR}/nanopore_drach_m6A_sites_28u32u36.bed)\n"
+printf "Nanopore non-DRACH count:                  $(wc -l < ${OUTDIR}/nanopore_non_drach_m6A_sites_28u32u36.bed)\n"
+printf "\n"
+
+printf "GLORI-seq DRACH count:                     $(wc -l < ${OUTDIR}/glori_drach_m6A_sites_12u24u48.bed)\n"
+printf "GLORI-seq non-DRACH count:                 $(wc -l < ${OUTDIR}/glori_non_drach_m6A_sites_12u24u48.bed)\n"
+
+
+# ---------- END OF SCRIPT ---------- #
+
+# ------------------------------------------------------------- #
+
+# B: venn diagrams
+# glori_nanopore_venn.R
+
+# C: sequence logos
+python ${RQC_PATH} sequence_logo -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -l 1 -p 2 -i ${OUTDIR}/nanopore_28u32u36.bed -o ${OUTDIR}/ont_union_15d25p.eps
+python ${RQC_PATH} sequence_logo -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -l 1 -p 2 -i ${OUTDIR}/glori_12u24u48.bed -o ${OUTDIR}/glori_union_15d25p.eps
+
+# D: IGV screenshot of PF3D7_0102300, loaded 28C1, glori_12i24i48.bed, nanopore_28u32u36.bed and DRACH.bed
+# E: metagene coverage
+
+rm -f ${OUTDIR}/samples_m6A_sites.txt
+touch ${OUTDIR}/samples_m6A_sites.txt
+echo "ONT_total_m6A control bed ${OUTDIR}/nanopore_28u32u36.bed" >> ${OUTDIR}/samples_m6A_sites.txt
+echo "GLORI-seq_total_m6A control bed ${OUTDIR}/glori_12u24u48.bed" >> ${OUTDIR}/samples_m6A_sites.txt
+
+python ${RQC_PATH} plot_coverage -m subfeature_cds -a ${ANNOTATION_FILE} --bins 100 --read_depth 0 --padding 500 --padding_ratio 0.1 --type mRNA \
+    -i ${OUTDIR}/samples_m6A_sites.txt --mod_normalisation other --skip_malannotations --plot_density -o ${OUTDIR}/nanoporeXglori15d25p.eps
+
+
