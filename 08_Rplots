@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -e
+
+source ./env.sh
+
+OUTDIR=$(pwd)/08_Rplots_output
+mkdir -p ${OUTDIR}
+
+# Differential expression (transcript counts)
+Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_28hpi.eps "6,7,8,9"
+Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_28hpi.png "6,7,8,9"
+
+Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_32hpi.eps "10,11,12,13"
+Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_32hpi.png "10,11,12,13"
+
+Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_36hpi.eps "14,15,16,17"
+Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_36hpi.png "14,15,16,17"
+
+
+# PCA, heatmap, term enrichment (transcript counts)
+
+
+# Differential abundance (site specific m6A / A)
+# Nuclear (coding, non-coding, unmapped), Mitochondrial
+
+# Differential methylation (WAM)
+
+
+
+# GLORI time points venn
+
+# ONT time points venn
+
+# GLORI DRACH vs non-DRACH
+
+# ONT DRACH vs non-DRACH
+
+# ONT x Nanopore overlap (union)
+
+# ONT x Nanopore overlap (intersect)
+
+# Differential abundance (chimeric transcripts)
+
+
+
+
+
+
+
+

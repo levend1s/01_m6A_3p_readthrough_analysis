@@ -36,7 +36,6 @@ bedtools intersect -a ${OUTDIR}/pfal_transcripts.gff -b ${OUTDIR}/pfal_transcrip
 bedtools intersect -a ${OUTDIR}/ex500_pfal_transcripts.gff -b ${OUTDIR}/ex500_pfal_transcripts.gff -wa -wb | awk -F '\t' '$4 != $13' > ${OUTDIR}/ex500_pfal_transcripts_overlaps.gff
 bedtools intersect -a ${OUTDIR}/ex1000_pfal_transcripts.gff -b ${OUTDIR}/ex1000_pfal_transcripts.gff -wa -wb | awk -F '\t' '$4 != $13' > ${OUTDIR}/ex1000_pfal_transcripts_overlaps.gff
 
-
 # Loop over each file
 for f in "${FILES[@]}"; do
     echo "Processing $f ..."
