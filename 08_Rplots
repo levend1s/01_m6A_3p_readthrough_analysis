@@ -37,34 +37,28 @@ mkdir -p ${OUTDIR}
 # Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
 # Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.png
 
-# Differential abundance (site specific m6A / A)
-# Nuclear (coding, non-coding, unmapped), Mitochondrial
-
-
 # Differential methylation (WAM)
-# Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${GAF_FILE} ${OUTDIR}/wam_analysis.eps
-# Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${GAF_FILE} ${OUTDIR}/wam_analysis.png
+# Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/wam_analysis.eps
+# Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/wam_analysis.png
+
+# UTR lengths
+# Rscript R/readthrough_analysis.R ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv ${OUTDIR}/readthrough_analysis.eps
+# Rscript R/readthrough_analysis.R ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv ${OUTDIR}/readthrough_analysis.png
+
+# GLORI x ONT analysis
+# Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.eps
+# Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.png
 
 # canonical m6A count distributions
+# Rscript R/trends_within_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/trends_within_wam.eps
+# Rscript R/trends_within_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/trends_within_wam.png
 
-# canonical m6A vs read depth
 
 # canonical m6A vs read through correlation
 
-# UTR lengths
 
-# poly-A lengths
-
-# readthrough proportion
-
-
-
-# GLORI x ONT analysis
-Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.eps
-Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.png
-
-
-
+# Differential abundance (site specific m6A / A)
+# Nuclear (coding, non-coding, unmapped), Mitochondrial
 
 
 

@@ -31,7 +31,7 @@ args <- commandArgs(trailingOnly = TRUE)
 wam_analysis_28hpi <- args[1]
 wam_analysis_32hpi <- args[2]
 wam_analysis_36hpi <- args[3]
-out_file <- args[5]
+out_file <- args[4]
 
 ext <- file_ext(out_file)
 name_no_ext <- file_path_sans_ext(out_file)
