@@ -19,9 +19,9 @@ M6A_RATIO=0.25
 OUTDIR=$(pwd)/05_glori_x_nanopore_overlap_output
 mkdir -p ${OUTDIR}
 
-TIMEPOINTS=("28" "32" "36")
+# TIMEPOINTS=("28" "32" "36")
 
-# # ---------- FIND DRACH SITES ---------- #
+# # # ---------- FIND DRACH SITES ---------- #
 python ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -o ${OUTDIR}/DRACH_SITES.tsv -m "[AGT][AG]AC[ACT]"
 tail -n +2 ${OUTDIR}/DRACH_SITES.tsv | awk '{print $1"\t"$2-1"\t"$3-1"\t"$4"\t"$5"\t"$6}' | sort -k1,1 -k2,2n > ${OUTDIR}/DRACH_SITES.bed
 awk '{mid=int(($2+$3)/2); print $1"\t"mid"\t"mid+1"\t"$4"\t"$5"\t"$6}' ${OUTDIR}/DRACH_SITES.bed > ${OUTDIR}/DRACH_middle.bed
@@ -83,8 +83,8 @@ echo "Separating DRACH and non-DRACH m6A sites ..."
 bedtools intersect -u -s -a ${OUTDIR}/nanopore_28u32u36.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/nanopore_drach_m6A_sites_28u32u36.bed
 bedtools intersect -v -s -a ${OUTDIR}/nanopore_28u32u36.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/nanopore_non_drach_m6A_sites_28u32u36.bed
 
-bedtools intersect -u -s -a ${OUTDIR}/glori_12u24u48.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/glori_non_drach_m6A_sites_12u24u48.bed
-bedtools intersect -v -s -a ${OUTDIR}/glori_12u24u48.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/glori_drach_m6A_sites_12u24u48.bed
+bedtools intersect -u -s -a ${OUTDIR}/glori_12u24u48.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/glori_drach_m6A_sites_12u24u48.bed
+bedtools intersect -v -s -a ${OUTDIR}/glori_12u24u48.bed -b ${OUTDIR}/DRACH_middle.bed > ${OUTDIR}/glori_non_drach_m6A_sites_12u24u48.bed
 
 echo "All done!"
 
@@ -155,9 +155,6 @@ printf "GLORI-seq non-DRACH count:                 $(wc -l < ${OUTDIR}/glori_non
 # ---------- END OF SCRIPT ---------- #
 
 # ------------------------------------------------------------- #
-
-# B: venn diagrams
-# glori_nanopore_venn.R
 
 # C: sequence logos
 python ${RQC_PATH} sequence_logo -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -l 1 -p 2 -i ${OUTDIR}/nanopore_28u32u36.bed -o ${OUTDIR}/ont_union_15d25p.eps

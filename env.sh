@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # USER SPECIFIED
-FEATURECOUNTS_PATH="~/mount_rna/subread-2.0.6-Linux-x86_64/bin/featureCounts"
+FEATURECOUNTS_PATH="featureCounts"
 MODKIT_PATH="modkit"
 RQC_DIR="/Users/joshualevendis/rqc"
-RQC_PATH="/Users/joshualevendis/rqc/rqc.py"
+RQC_PATH="${RQC_DIR}/rqc.py"
 
-ANNOTATION_FILE="/Users/joshualevendis/Documents/RNA/honours/Pfalciparum3D7/gff/data/PlasmoDB-67_Pfalciparum3D7.gff"
-GENOME_FILE="/Users/joshualevendis/Documents/RNA/honours/Pfalciparum3D7/fasta/data/PlasmoDB-67_Pfalciparum3D7_Genome.fasta"
-GENOME_FAI_FILE="/Users/joshualevendis/Documents/RNA/honours/Pfalciparum3D7/fasta/data/PlasmoDB-67_Pfalciparum3D7_Genome.fasta.fai"
-
+PLASMODB_DIR="/Users/joshualevendis/Documents/RNA/honours/Pfalciparum3D7/"
+ANNOTATION_FILE="${PLASMODB_DIR}/gff/data/PlasmoDB-67_Pfalciparum3D7.gff"
+GENOME_FILE="${PLASMODB_DIR}/fasta/data/PlasmoDB-67_Pfalciparum3D7_Genome.fasta"
+GENOME_FAI_FILE="${PLASMODB_DIR}/fasta/data/PlasmoDB-67_Pfalciparum3D7_Genome.fasta.fai"
+GAF_FILE="${PLASMODB_DIR}/gaf/PlasmoDB-67_Pfalciparum3D7_GO.gaf"
 
 BAMDIR="/Users/joshualevendis/Downloads/bams"
 

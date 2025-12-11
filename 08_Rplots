@@ -8,39 +8,64 @@ OUTDIR=$(pwd)/08_Rplots_output
 mkdir -p ${OUTDIR}
 
 # Differential expression (transcript counts)
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_28hpi.eps "6,7,8,9"
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_28hpi.png "6,7,8,9"
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.eps
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.png
 
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_32hpi.eps "10,11,12,13"
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_32hpi.png "10,11,12,13"
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_tx_32hpi.eps
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_tx_32hpi.png
 
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_36hpi.eps "14,15,16,17"
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${OUTDIR}/de_tx_36hpi.png "14,15,16,17"
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.eps
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.png
 
+# # Differential abundance (chimeric transcripts)
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.eps
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.png
+
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "5,6,7,8" ${FEATURECOUNTS_DIR}/8.3_featureCounts "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_chimeric_32hpi.eps
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "5,6,7,8" ${FEATURECOUNTS_DIR}/8.3_featureCounts "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_chimeric_32hpi.png
+
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.eps
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.png
 
 # PCA, heatmap, term enrichment (transcript counts)
+# Rscript R/pca_tx.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${GAF_FILE} ${OUTDIR}/pca_tx.eps
+# Rscript R/pca_tx.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${GAF_FILE} ${OUTDIR}/pca_tx.png
 
+# Rscript R/pca_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_raw.tsv ${GAF_FILE} ${OUTDIR}/pca_wam.eps
+# Rscript R/pca_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_raw.tsv ${GAF_FILE} ${OUTDIR}/pca_wam.png
+
+# Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
+# Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.png
 
 # Differential abundance (site specific m6A / A)
 # Nuclear (coding, non-coding, unmapped), Mitochondrial
 
+
 # Differential methylation (WAM)
+# Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${GAF_FILE} ${OUTDIR}/wam_analysis.eps
+# Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${GAF_FILE} ${OUTDIR}/wam_analysis.png
+
+# canonical m6A count distributions
+
+# canonical m6A vs read depth
+
+# canonical m6A vs read through correlation
+
+# UTR lengths
+
+# poly-A lengths
+
+# readthrough proportion
 
 
 
-# GLORI time points venn
+# GLORI x ONT analysis
+Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.eps
+Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.png
 
-# ONT time points venn
 
-# GLORI DRACH vs non-DRACH
 
-# ONT DRACH vs non-DRACH
 
-# ONT x Nanopore overlap (union)
-
-# ONT x Nanopore overlap (intersect)
-
-# Differential abundance (chimeric transcripts)
 
 
 
