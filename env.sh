@@ -23,6 +23,8 @@ FEATURECOUNTS_DIR=$(pwd)/03_featureCounts_output
 TES_ANALYSIS_DIR=$(pwd)/04_tes_and_gene_methylation_analysis_output
 GLORI_X_NANOPORE_DIR=$(pwd)/05_glori_x_nanopore_overlap_output
 
+GENE_NEIGHBOUR_DIR=$(pwd)/06_gene_neighbours_output
+
 # requirements: glori-seq_12hpi.tsv, glori-seq_24hpi.tsv, glori-seq_48hpi.tsv
 GLORI_DIR=/Users/joshualevendis/Library/CloudStorage/OneDrive-TheUniversityofMelbourne/rqc_output/GLORI-seq
 

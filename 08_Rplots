@@ -53,8 +53,31 @@ mkdir -p ${OUTDIR}
 # Rscript R/trends_within_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/trends_within_wam.eps
 # Rscript R/trends_within_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/trends_within_wam.png
 
-
 # canonical m6A vs read through correlation
+Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_genes.bed \
+    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+    ${OUTDIR}/wam_vs_readthrough.png
+
+Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_0.bed \
+    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+    ${OUTDIR}/wam_vs_readthrough_0nt.png
+
+Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_100.bed \
+    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+    ${OUTDIR}/wam_vs_readthrough_100nt.png
+
+Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_1000.bed \
+    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+    ${OUTDIR}/wam_vs_readthrough_1000nt.png
+
+Rscript R/wam_vs_readthrough.R 1 ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_1000.bed \
+    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+    ${OUTDIR}/wam_vs_readthrough_1000nt_1m6A.png
 
 
 # Differential abundance (site specific m6A / A)
