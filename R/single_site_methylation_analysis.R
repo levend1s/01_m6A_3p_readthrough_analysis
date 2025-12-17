@@ -42,19 +42,12 @@ df_28C2 <- read.delim(input_file_28C2, header=FALSE, col.names = bedmethyl_heade
 df_28K1 <- read.delim(input_file_28K1, header=FALSE, col.names = bedmethyl_header)
 df_28K2 <- read.delim(input_file_28K2, header=FALSE, col.names = bedmethyl_header)
 
-
-# TODO HACK
-df_28C1 <- df_28C1[df_28C1$contig == "Pf3D7_MIT_v3",]
-df_28C2 <- df_28C2[df_28C2$contig == "Pf3D7_MIT_v3",]
-df_28K1 <- df_28K1[df_28K1$contig == "Pf3D7_MIT_v3",]
-df_28K2 <- df_28K2[df_28K2$contig == "Pf3D7_MIT_v3",]
-
 cat("Read in bedmethyl files complete!\n")
 
-df_28C1$U_28C1 <- df_28C1$canonical + df_28C1$other_mod + df_28C1$diff + df_28C1$fail
-df_28C2$U_28C2 <- df_28C2$canonical + df_28C2$other_mod + df_28C2$diff + df_28C2$fail
-df_28K1$U_28K1 <- df_28K1$canonical + df_28K1$other_mod + df_28K1$diff + df_28K1$fail
-df_28K2$U_28K2 <- df_28K2$canonical + df_28K2$other_mod + df_28K2$diff + df_28K2$fail
+df_28C1$U_28C1 <- df_28C1$canonical + df_28C1$other_mod + df_28C1$diff# + df_28C1$fail
+df_28C2$U_28C2 <- df_28C2$canonical + df_28C2$other_mod + df_28C2$diff# + df_28C2$fail
+df_28K1$U_28K1 <- df_28K1$canonical + df_28K1$other_mod + df_28K1$diff# + df_28K1$fail
+df_28K2$U_28K2 <- df_28K2$canonical + df_28K2$other_mod + df_28K2$diff# + df_28K2$fail
 
 df_28C1$M_28C1 <- df_28C1$mod
 df_28C2$M_28C2 <- df_28C2$mod
