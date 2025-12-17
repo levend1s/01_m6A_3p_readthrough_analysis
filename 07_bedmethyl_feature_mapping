@@ -75,10 +75,4 @@ awk '$1 == "Pf3D7_MIT_v3"' ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonov
 awk '$1 == "Pf3D7_MIT_v3"' ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed
 awk '$1 == "Pf3D7_MIT_v3"' ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed
 
-awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
-awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
-awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
-awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
-
-
 echo "All files processed. Results in $OUTDIR/"

@@ -8,6 +8,9 @@
 #SBATCH --cpus-per-task=64
 #SBATCH --ntasks=1
 
+# NOTE 32C1 and 32K1 had issues during sequencing, and are split into two runs each. 
+# After basecalling, merge the two files into a single 32C1 / 32K1 bam for downstream analysis.
+
 SAMPLE="28C1"
 DORADO="/data/gpfs/projects/punim0875/josh/dorado-0.8.3-linux-x64/bin/dorado"
 RNASEQ_PROJ_DIR="/data/gpfs/projects/punim0875/josh/projects/proj-5210_ralphlab-1128.4.524/rnaseq/nanopore/METTL3_KS_TIME_SERIES"

@@ -24,14 +24,14 @@ for SAMPLE in "${SAMPLES[@]}"; do
 
     # Generating bedmethyls:
     THRESHOLD=0.95
-    ${MODKIT_PATH} pileup --filter-threshold ${THRESHOLD} ${FILEPATH}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed --log-filepath ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.log
+    ${MODKIT_PATH} pileup --filter-threshold ${THRESHOLD} ${FILTERED_BAMDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed --log-filepath ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.log
     
     for TYPE in "${TYPES[@]}"; do
         cat ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed | awk -v TYPE=$TYPE -v PERCENT_CUTOFF=$PERCENT_CUTOFF '{if ($4 == TYPE && $11 > PERCENT_CUTOFF) print $0 }' > ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.${PERCENT_CUTOFF}p.${TYPE}.bed
     done
 
     THRESHOLD=0.65
-    ${MODKIT_PATH} pileup --filter-threshold ${THRESHOLD} ${FILEPATH}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed --log-filepath ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.log
+    ${MODKIT_PATH} pileup --filter-threshold ${THRESHOLD} ${FILTERED_BAMDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed --log-filepath ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.log
     
     for TYPE in "${TYPES[@]}"; do
         cat ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.bed | awk -v TYPE=$TYPE -v PERCENT_CUTOFF=$PERCENT_CUTOFF '{if ($4 == TYPE && $11 > PERCENT_CUTOFF) print $0 }' > ${OUTDIR}/${SAMPLE}_to_pfal_${THRESHOLD}.${PERCENT_CUTOFF}p.${TYPE}.bed
