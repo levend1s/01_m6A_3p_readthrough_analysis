@@ -7,7 +7,7 @@ source ./env.sh
 OUTDIR=$(pwd)/08_Rplots_output
 mkdir -p ${OUTDIR}
 
-# Differential expression (transcript counts)
+# # Differential expression (transcript counts)
 # Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.eps
 # Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.png
 
@@ -17,7 +17,7 @@ mkdir -p ${OUTDIR}
 # Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.eps
 # Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.png
 
-# # Differential abundance (chimeric transcripts)
+# # # Differential abundance (chimeric transcripts)
 # Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.eps
 # Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/8.3_featureCounts "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.png
 
@@ -27,7 +27,7 @@ mkdir -p ${OUTDIR}
 # Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.eps
 # Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/8.3_featureCounts "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.png
 
-# PCA, heatmap, term enrichment (transcript counts)
+# # PCA, heatmap, term enrichment (transcript counts)
 # Rscript R/pca_tx.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${GAF_FILE} ${OUTDIR}/pca_tx.eps
 # Rscript R/pca_tx.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${GAF_FILE} ${OUTDIR}/pca_tx.png
 
@@ -37,53 +37,79 @@ mkdir -p ${OUTDIR}
 # Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
 # Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/8.3_featureCounts_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.png
 
-# Differential methylation (WAM)
+# # Differential methylation (WAM)
 # Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/wam_analysis.eps
 # Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/wam_analysis.png
 
-# UTR lengths
+# # UTR lengths
 # Rscript R/readthrough_analysis.R ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv ${OUTDIR}/readthrough_analysis.eps
 # Rscript R/readthrough_analysis.R ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv ${OUTDIR}/readthrough_analysis.png
 
-# GLORI x ONT analysis
+# # GLORI x ONT analysis
 # Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.eps
 # Rscript R/glori_nanopore_venn.R ${GLORI_X_NANOPORE_DIR} ${OUTDIR}/glori_nanopore_venn.png
 
-# canonical m6A count distributions
+# # canonical m6A count distributions
 # Rscript R/trends_within_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/trends_within_wam.eps
 # Rscript R/trends_within_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/trends_within_wam.png
 
-# canonical m6A vs read through correlation
-Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_genes.bed \
-    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
-    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
-    ${OUTDIR}/wam_vs_readthrough.png
+# # canonical m6A vs read through correlation
+# Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_genes.bed \
+#     ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+#     ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+#     ${OUTDIR}/wam_vs_readthrough.png
 
-Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_0.bed \
-    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
-    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
-    ${OUTDIR}/wam_vs_readthrough_0nt.png
+# Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_0.bed \
+#     ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+#     ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+#     ${OUTDIR}/wam_vs_readthrough_0nt.png
 
-Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_100.bed \
-    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
-    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
-    ${OUTDIR}/wam_vs_readthrough_100nt.png
+# Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_100.bed \
+#     ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+#     ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+#     ${OUTDIR}/wam_vs_readthrough_100nt.png
 
-Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_1000.bed \
-    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
-    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
-    ${OUTDIR}/wam_vs_readthrough_1000nt.png
+# Rscript R/wam_vs_readthrough.R all ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_1000.bed \
+#     ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+#     ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+#     ${OUTDIR}/wam_vs_readthrough_1000nt.png
 
-Rscript R/wam_vs_readthrough.R 1 ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_1000.bed \
-    ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
-    ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
-    ${OUTDIR}/wam_vs_readthrough_1000nt_1m6A.png
-
+# Rscript R/wam_vs_readthrough.R 1 ${GENE_NEIGHBOUR_DIR}/plasmodium_isolated_genes_1000.bed \
+#     ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_36hpi_compare.tsv \
+#     ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv \
+#     ${OUTDIR}/wam_vs_readthrough_1000nt_1m6A.png
 
 # Differential abundance (site specific m6A / A)
 # Nuclear (coding, non-coding, unmapped), Mitochondrial
+# Rscript R/single_site_methylation_analysis.R \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed \
+#     ${OUTDIR}/dm_mito_sites.png
+
+Rscript R/single_site_methylation_analysis.R \
+    ~/rqc/feature_mapped_bedmethyls/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed \
+    ~/rqc/feature_mapped_bedmethyls/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed \
+    ~/rqc/feature_mapped_bedmethyls/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed \
+    ~/rqc/feature_mapped_bedmethyls/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed \
+    ${OUTDIR}/dm_mito_sites.png
 
 
+
+# Rscript R/single_site_methylation_analysis.R \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed \
+#     ${OUTDIR}/dm_nuclear_sites.png
+
+# Rscript R/single_site_methylation_analysis.R \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed \
+#     ${FEATURE_MAPPED_BEDMETHYL_DIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed \
+#     ${OUTDIR}/dm_nuclear_sites.png
 
 
 

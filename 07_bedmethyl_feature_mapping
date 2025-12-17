@@ -10,7 +10,7 @@ FILES=(
     "${BEDMETHYL_DIR}/28K2_to_pfal_0.95.0p.a.bed"
 )
 
-# Output directory
+# # Output directory
 OUTDIR=$(pwd)/07_bedmethyl_feature_mapping_output
 mkdir -p ${OUTDIR}
 
@@ -61,5 +61,24 @@ for f in "${FILES[@]}"; do
     bedtools intersect -a "$OUTFILE" -b "${OUTDIR}/ex500_pfal_transcripts_overlaps.gff" -v > "${OUTDIR}/${PREFIX}_to_pfal_0.95.0p.a.feature_mapped.nonoverlap500.bed"
     bedtools intersect -a "$OUTFILE" -b "${OUTDIR}/ex1000_pfal_transcripts_overlaps.gff" -v > "${OUTDIR}/${PREFIX}_to_pfal_0.95.0p.a.feature_mapped.nonoverlap1000.bed"
 done
+
+
+# ----------- bedmethyl file preprocessing ----------- #
+
+awk '$1 != "Pf3D7_MIT_v3" && $1 != "Pf3D7_API_v3"' ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed
+awk '$1 != "Pf3D7_MIT_v3" && $1 != "Pf3D7_API_v3"' ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed
+awk '$1 != "Pf3D7_MIT_v3" && $1 != "Pf3D7_API_v3"' ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed
+awk '$1 != "Pf3D7_MIT_v3" && $1 != "Pf3D7_API_v3"' ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.no_mito_api.bed
+
+awk '$1 == "Pf3D7_MIT_v3"' ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed
+awk '$1 == "Pf3D7_MIT_v3"' ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed
+awk '$1 == "Pf3D7_MIT_v3"' ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed
+awk '$1 == "Pf3D7_MIT_v3"' ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.mito.bed
+
+awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
+awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28C2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
+awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K1_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
+awk '$1 == "Pf3D7_01_v3"' ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.bed > ${OUTDIR}/28K2_to_pfal_0.95.0p.a.feature_mapped.nonoverlap.Pf3D7_01_v3.bed
+
 
 echo "All files processed. Results in $OUTDIR/"
