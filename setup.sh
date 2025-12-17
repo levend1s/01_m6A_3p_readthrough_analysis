@@ -14,3 +14,8 @@ python3 -m virtualenv env
 source env/bin/activate
 pip install -r requirements.txt
 deactivate
+
+# get ONT RNA-seq
+
+
+# get GLORI-seq data

@@ -17,7 +17,7 @@ mkdir -p ${OUTDIR}
 for SAMPLE in "${SAMPLES[@]}"; do
     echo "Processing ${SAMPLE}..."
 
-    samtools view -bq 50 ${BAMDIR}/${SAMPLE}_to_pfal.bam > ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.bam
+    samtools view -bq 50 ${FILTERED_BAMDIR}/${SAMPLE}_to_pfal.bam > ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.bam
     samtools sort ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.bam > ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam
     samtools index ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam
     samtools quickcheck ${OUTDIR}/${SAMPLE}_to_pfal.50MAPQ.sorted.bam
