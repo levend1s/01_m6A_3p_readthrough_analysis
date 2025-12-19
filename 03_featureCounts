@@ -63,4 +63,4 @@ for SAMPLE in "${SAMPLES[@]}"; do
     awk 'NR==FNR{a[$2]=$1;next} {if ($1 in a) {print $0"\t" a[$1]} else {print $0"\t"0}}' ${OUTDIR}/${SAMPLE}_overlaps_counts.txt ${OUTDIR}/combined_overlap_counts.txt > ${OUTDIR}/temp.txt && mv ${OUTDIR}/temp.txt ${OUTDIR}/combined_overlap_counts.txt
 done
 
-printf "Geneid\t28C1\t28C2\t28K1\t28K2\t32C1\t32C2\t32K1\t32K2\t36C1\t36C2\t36K1\t36K2\n" | cat - ${OUTDIR}/combined_overlap_counts.txt > ${OUTDIR}/tmp && mv ${OUTDIR}/tmp ${OUTDIR}/combined_overlap_counts.txt
+printf "Geneid\t28C1\t28C2\t28K1\t28K2\t32C1\t32C2\t32K1\t32K2\t36C1\t36C2\t36K1\t36K2\n" | cat - ${OUTDIR}/combined_overlap_counts.txt > ${OUTDIR}/tmp && mv ${OUTDIR}/tmp ${OUTDIR}/subread_featureCounts_results_chimeric.txt
