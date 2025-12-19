@@ -24,7 +24,7 @@ OUTDIR=$(pwd)/03_featureCounts_output
 mkdir -p ${OUTDIR}
 
 # Generating featureCounts:
-${FEATURECOUNTS_PATH} -O -s 1 -L -R CORE -a ${ANNOTATION_FILE} -o ${OUTDIR} \
+${FEATURECOUNTS_PATH} -O -s 1 -L -R CORE -a ${ANNOTATION_FILE} -o subread_featureCounts_results \
     ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28C2_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28K1_to_pfal.50MAPQ.sorted.bam \
