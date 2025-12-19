@@ -22,7 +22,7 @@ mkdir -p ${OUTDIR}
 # TIMEPOINTS=("28" "32" "36")
 
 # # # ---------- FIND DRACH SITES ---------- #
-python ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -o ${OUTDIR}/DRACH_SITES.tsv -m "[AGT][AG]AC[ACT]"
+python3 ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -o ${OUTDIR}/DRACH_SITES.tsv -m "[AGT][AG]AC[ACT]"
 tail -n +2 ${OUTDIR}/DRACH_SITES.tsv | awk '{print $1"\t"$2-1"\t"$3-1"\t"$4"\t"$5"\t"$6}' | sort -k1,1 -k2,2n > ${OUTDIR}/DRACH_SITES.bed
 awk '{mid=int(($2+$3)/2); print $1"\t"mid"\t"mid+1"\t"$4"\t"$5"\t"$6}' ${OUTDIR}/DRACH_SITES.bed > ${OUTDIR}/DRACH_middle.bed
 
@@ -157,8 +157,8 @@ printf "GLORI-seq non-DRACH count:                 $(wc -l < ${OUTDIR}/glori_non
 # ------------------------------------------------------------- #
 
 # C: sequence logos
-python ${RQC_PATH} sequence_logo -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -l 1 -p 2 -i ${OUTDIR}/nanopore_28u32u36.bed -o ${OUTDIR}/ont_union_15d25p.eps
-python ${RQC_PATH} sequence_logo -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -l 1 -p 2 -i ${OUTDIR}/glori_12u24u48.bed -o ${OUTDIR}/glori_union_15d25p.eps
+python3 ${RQC_PATH} sequence_logo -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -l 1 -p 2 -i ${OUTDIR}/nanopore_28u32u36.bed -o ${OUTDIR}/ont_union_15d25p.eps
+python3 ${RQC_PATH} sequence_logo -a ${ANNOTATION_FILE} -g ${GENOME_FILE} -l 1 -p 2 -i ${OUTDIR}/glori_12u24u48.bed -o ${OUTDIR}/glori_union_15d25p.eps
 
 # D: IGV screenshot of PF3D7_0102300, loaded 28C1, glori_12i24i48.bed, nanopore_28u32u36.bed and DRACH.bed
 # E: metagene coverage
@@ -168,7 +168,7 @@ touch ${OUTDIR}/samples_m6A_sites.txt
 echo "ONT_total_m6A control bed ${OUTDIR}/nanopore_28u32u36.bed" >> ${OUTDIR}/samples_m6A_sites.txt
 echo "GLORI-seq_total_m6A control bed ${OUTDIR}/glori_12u24u48.bed" >> ${OUTDIR}/samples_m6A_sites.txt
 
-python ${RQC_PATH} plot_coverage -m subfeature_cds -a ${ANNOTATION_FILE} --bins 100 --read_depth 0 --padding 500 --padding_ratio 0.1 --type mRNA \
+python3 ${RQC_PATH} plot_coverage -m subfeature_cds -a ${ANNOTATION_FILE} --bins 100 --read_depth 0 --padding 500 --padding_ratio 0.1 --type mRNA \
     -i ${OUTDIR}/samples_m6A_sites.txt --mod_normalisation other --skip_malannotations --plot_density -o ${OUTDIR}/nanoporeXglori15d25p.eps
 
 

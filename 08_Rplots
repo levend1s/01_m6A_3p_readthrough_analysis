@@ -8,22 +8,22 @@ OUTDIR=$(pwd)/08_Rplots_output
 mkdir -p ${OUTDIR}
 
 # Differential expression (transcript counts)
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.eps
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.png
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.eps
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_tx_28hpi.png
 
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_tx_32hpi.eps
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_tx_32hpi.png
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.eps
-Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.png
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_tx_32hpi.eps
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_tx_32hpi.png
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.eps
+# Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.png
 
-# # Differential abundance (chimeric transcripts)
-Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.eps
-Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.png
+# # # Differential abundance (chimeric transcripts)
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.eps
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.png
 
-Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "5,6,7,8" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_chimeric_32hpi.eps
-Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "5,6,7,8" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_chimeric_32hpi.png
-Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.eps
-Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.png
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "5,6,7,8" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_chimeric_32hpi.eps
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "5,6,7,8" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "10,11,12,13" ${GAF_FILE} ${OUTDIR}/de_chimeric_32hpi.png
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.eps
+# Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "9,10,11,12" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_chimeric_36hpi.png
 
 # PCA, heatmap, term enrichment (transcript counts)
 Rscript R/pca_tx.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results ${GAF_FILE} ${OUTDIR}/pca_tx.eps

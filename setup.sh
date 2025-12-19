@@ -17,6 +17,11 @@ Rscript -e 'BiocManager::install("clusterProfiler")'
 
 
 Rscript -e "install.packages('ggplot2', repos='https://cloud.r-project.org')"
+Rscript -e "install.packages('ggridges', repos='https://cloud.r-project.org')"
+Rscript -e "install.packages('pheatmap', repos='https://cloud.r-project.org')"
+Rscript -e "install.packages('compositions', repos='https://cloud.r-project.org')"
+
+
 
 
 # check modkit
@@ -25,8 +30,9 @@ Rscript -e "install.packages('ggplot2', repos='https://cloud.r-project.org')"
 # ./target/debug/modkit
 
 
-# check bedtools
-# https://formulae.brew.sh/formula/samtools
+# brew install bedtools
+# brew install samtools
+
 
 # check featureCounts
 # https://sourceforge.net/projects/subread/
@@ -37,7 +43,7 @@ cd ${RQC_DIR}
 # pip3 install virtualenv
 python3 -m virtualenv env
 source env/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 deactivate
 
 # get ONT RNA-seq
