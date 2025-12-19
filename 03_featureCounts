@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ./env.sh
+set -e
 
 # INPUTS: 
 # - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam
@@ -23,7 +24,7 @@ OUTDIR=$(pwd)/03_featureCounts_output
 mkdir -p ${OUTDIR}
 
 # Generating featureCounts:
-${FEATURECOUNTS_PATH} -O -s 1 -L -R CORE -a ${ANNOTATION_PATH} -o ${OUTDIR} \
+${FEATURECOUNTS_PATH} -O -s 1 -L -R CORE -a ${ANNOTATION_FILE} -o ${OUTDIR} \
     ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28C2_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28K1_to_pfal.50MAPQ.sorted.bam \
@@ -37,6 +38,9 @@ ${FEATURECOUNTS_PATH} -O -s 1 -L -R CORE -a ${ANNOTATION_PATH} -o ${OUTDIR} \
     ${FILTERED_BAMDIR}/36K1_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/36K2_to_pfal.50MAPQ.sorted.bam
 
+mv *..featureCounts ${OUTDIR}/
+mv 03_featureCounts_output.summary ${OUTDIR}/
+
 # From each featureCounts file the third column is number of assignments. We can filter for just entries with multiple assignments (>1) and get a list of gene ids that are involved in overlapping assignments. The below gives us a list of genes with the number of overlapping read counts:
 
 for SAMPLE in "${SAMPLES[@]}"; do
@@ -47,9 +51,9 @@ for SAMPLE in "${SAMPLES[@]}"; do
 done
 
 # # There are 3 parent types of features in the Plasmodium off file: protein_coding_gene, ncRNA_gene, pseudogene. I'll create a list of all gene IDs with the following commands:
-awk '$3=="protein_coding_gene" {split ($9,x,/[=;]/); print x[2]}' ${ANNOTATION} > ${OUTDIR}/pcg_pseudogene_ncRNA_list.tsv
-awk '$3=="ncRNA_gene" {split ($9,x,/[=;]/); print x[2]}' ${ANNOTATION} >> ${OUTDIR}/pcg_pseudogene_ncRNA_list.tsv
-awk '$3=="pseudogene" {split ($9,x,/[=;]/); print x[2]}' ${ANNOTATION} >> ${OUTDIR}/pcg_pseudogene_ncRNA_list.tsv
+awk '$3=="protein_coding_gene" {split ($9,x,/[=;]/); print x[2]}' ${ANNOTATION_FILE} > ${OUTDIR}/pcg_pseudogene_ncRNA_list.tsv
+awk '$3=="ncRNA_gene" {split ($9,x,/[=;]/); print x[2]}' ${ANNOTATION_FILE} >> ${OUTDIR}/pcg_pseudogene_ncRNA_list.tsv
+awk '$3=="pseudogene" {split ($9,x,/[=;]/); print x[2]}' ${ANNOTATION_FILE} >> ${OUTDIR}/pcg_pseudogene_ncRNA_list.tsv
 cp ${OUTDIR}/pcg_pseudogene_ncRNA_list.tsv ${OUTDIR}/combined_overlap_counts.txt
 
 for SAMPLE in "${SAMPLES[@]}"; do

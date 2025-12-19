@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ./env.sh
+set -e
 
 # INPUTS: 
 # - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam

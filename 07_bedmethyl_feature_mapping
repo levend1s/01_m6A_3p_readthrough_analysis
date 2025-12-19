@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source ./env.sh
+set -e
 
 # Define your input files
 FILES=(
