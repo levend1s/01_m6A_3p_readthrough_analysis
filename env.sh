@@ -2,7 +2,7 @@
 
 # USER SPECIFIED
 FEATURECOUNTS_PATH="/Users/jlevendis/Downloads/subread-2.1.1-macOS-arm64/bin/featureCounts"
-MODKIT_PATH="/Users/jlevendis/Downloads/dist_modkit_v0.6.0_68b540b/modkit"
+MODKIT_PATH="/Users/jlevendis/modkit/target/debug/modkit"
 RQC_DIR="/Users/jlevendis/rqc"
 RQC_PATH="${RQC_DIR}/rqc.py"
 
