@@ -56,18 +56,28 @@ echo "28C1_m6A_0.95 control bedmethyl ${BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.be
 
 python3 ${RQC_PATH} plot_coverage -m subfeature -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --ids PF3D7_1123900.1 \
     -i ${ALL_MODS_SAMPLES} --separate_y_axes -o ${OUTDIR}/PF3D7_1123900_mod_compare.eps --plot_type bar
+python3 ${RQC_PATH} plot_coverage -m subfeature -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --ids PF3D7_1123900.1 \
+    -i ${ALL_MODS_SAMPLES} --separate_y_axes -o ${OUTDIR}/PF3D7_1123900_mod_compare.png --plot_type bar
 python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 0 --padding_ratio 0.1 --ids PF3D7_1123900.1 \
     -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1338200.1.eps --mod_normalisation other
+python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 0 --padding_ratio 0.1 --ids PF3D7_1123900.1 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1338200.1.png --mod_normalisation other
 
 # B: coverage (top PC1 contributors)
 # the trick for padding here is padding_ratio = padding / (gene length + padding)
 
 python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 0 --padding_ratio 0.1 --ids PF3D7_1237700.1 \
     -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1237700.1.eps --mod_normalisation other
+python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 0 --padding_ratio 0.1 --ids PF3D7_1237700.1 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1237700.1.png --mod_normalisation other
 python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 300 --padding_ratio 0.12 --ids PF3D7_0309600.1 \
     -i ${M6A_SAMPLES} --mod_normalisation other -o ${OUTDIR}/PF3D7_0309600.1.eps
+python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 300 --padding_ratio 0.12 --ids PF3D7_0309600.1 \
+    -i ${M6A_SAMPLES} --mod_normalisation other -o ${OUTDIR}/PF3D7_0309600.1.png
 python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 300 --padding_ratio 0.18 --ids PF3D7_1128200.1 \
     -i ${M6A_SAMPLES} --mod_normalisation other -o ${OUTDIR}/PF3D7_1128200.1.eps
+python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 300 --padding_ratio 0.18 --ids PF3D7_1128200.1 \
+    -i ${M6A_SAMPLES} --mod_normalisation other -o ${OUTDIR}/PF3D7_1128200.1.png
 
 # F: nanopore offset from canonical PAS
 awk '$6 != 0 {print $1"\t"$2"\t"$6"\t"$6+1"\t"$3"\t"0"\t"$4}' ${TES_ANALYSIS_DIR}/mRNA_tes_analysis_28hpi_compare.tsv > ${OUTDIR}/28hpi_canonical_pas.tsv
@@ -78,14 +88,25 @@ awk 'NR==1 {print "contig\tID\tstart\tend\ttype\tscore\tstrand"; next} {print}' 
 python3 ${RQC_PATH} calculate_offsets -d 1000 -r ${OUTDIR}/28hpi_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv \
     -i m6a ${GLORI_X_NANOPORE_DIR}/nanopore_28u32u36.bed annotation_three_p ${OUTDIR}/28hpi_3p_annotation.tsv
 python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d 1000 -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.eps
+python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d 1000 -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.png
+
 
 # G: m6A specific analysis
 python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 100 --padding_ratio 0.1 --ids PF3D7_0402000.1 \
     -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_0402000.1.eps --mod_normalisation other --plot_type bar --alpha 1
+python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 100 --padding_ratio 0.1 --ids PF3D7_0402000.1 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_0402000.1.png --mod_normalisation other --plot_type bar --alpha 1
+
 python3 ${RQC_PATH} m6A_specific_tes_analysis -a ${ANNOTATION_FILE} -i ${M6A_SINGLE_SAMPLES} --ids PF3D7_0402000.1 --poly_a_filter 10 -d 10 \
-    --separate_mod_tracks --offset_padding 1000 --offset 114415
+    --separate_mod_tracks --offset_padding 1000 --offset 114415 -o PF3D7_0402000.1.m6A_specific_tes_analysis.eps
+python3 ${RQC_PATH} m6A_specific_tes_analysis -a ${ANNOTATION_FILE} -i ${M6A_SINGLE_SAMPLES} --ids PF3D7_0402000.1 --poly_a_filter 10 -d 10 \
+    --separate_mod_tracks --offset_padding 1000 --offset 114415 -o PF3D7_0402000.1.m6A_specific_tes_analysis.png
 
 python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 1823 --padding_ratio 0.25 --ids PF3D7_1439700 \
     -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1439700.1.eps --mod_normalisation other --plot_type bar --alpha 1
+python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 1823 --padding_ratio 0.25 --ids PF3D7_1439700 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_1439700.1.png --mod_normalisation other --plot_type bar --alpha 1
 python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 2106 --padding_ratio 0.33 --ids PF3D7_0518300 \
     -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_0518300.1.eps --mod_normalisation other --plot_type bar --alpha 1
+python3 ${RQC_PATH} plot_coverage -m gene -a ${ANNOTATION_FILE} --bins 1000 --read_depth ${READ_DEPTH} --padding 2106 --padding_ratio 0.33 --ids PF3D7_0518300 \
+    -i ${M6A_SAMPLES} -o ${OUTDIR}/PF3D7_0518300.1.png --mod_normalisation other --plot_type bar --alpha 1
