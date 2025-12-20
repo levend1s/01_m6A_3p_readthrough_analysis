@@ -21,7 +21,16 @@ Rscript -e "install.packages('ggridges', repos='https://cloud.r-project.org')"
 Rscript -e "install.packages('pheatmap', repos='https://cloud.r-project.org')"
 Rscript -e "install.packages('compositions', repos='https://cloud.r-project.org')"
 
+Rscript -e "install.packages('devtools', repos='https://cloud.r-project.org')"
+Rscript -e 'devtools::install_github("psyteachr/introdataviz")'
 
+Rscript -e "install.packages('ggalluvial', repos='https://cloud.r-project.org')"
+
+Rscript -e "install.packages('ggsignif', repos='https://cloud.r-project.org')"
+
+
+Rscript -e "install.packages('effectsize', repos='https://cloud.r-project.org')"
+Rscript -e "install.packages('eulerr', repos='https://cloud.r-project.org')"
 
 
 # check modkit

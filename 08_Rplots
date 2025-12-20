@@ -16,7 +16,7 @@ Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "1
 Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.eps
 Rscript R/diff_abundance.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results "14,15,16,17" ${GAF_FILE} ${OUTDIR}/de_tx_36hpi.png
 
-# # Differential abundance (chimeric transcripts)
+# # # Differential abundance (chimeric transcripts)
 Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.eps
 Rscript R/diff_abundance_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt "1,2,3,4" ${FEATURECOUNTS_DIR}/subread_featureCounts_results "6,7,8,9" ${GAF_FILE} ${OUTDIR}/de_chimeric_28hpi.png
 
@@ -31,7 +31,8 @@ Rscript R/pca_tx.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results ${GAF_FILE
 Rscript R/pca_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_raw.tsv ${GAF_FILE} ${OUTDIR}/pca_wam.eps
 Rscript R/pca_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_raw.tsv ${GAF_FILE} ${OUTDIR}/pca_wam.png
 
-Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
+# Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
+Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
 Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.png
 
 # Differential methylation (WAM)
