@@ -1,0 +1,81 @@
+#!/bin/bash
+
+set -e
+
+source ./env.sh
+
+OUTDIR=$(pwd)/modified_motif_analysis_output
+mkdir -p ${OUTDIR}
+
+# modify plasmodium FASTA based off bedmethyl
+
+
+READ_DEPTH=15
+M6A_RATIO=0.25
+
+# # ---------- NANOPORE BEDMETHYL PROCESSING ---------- #
+# # FILTER BEDMETHYLS FOR 15X COV AND 25% MOD PROP
+# echo "Processing 28hpi samples ..."
+# awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.bed > ${OUTDIR}/nanopore_28.temp.bed
+# awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/28C2_to_pfal_0.95.0p.a.bed >> ${OUTDIR}/nanopore_28.temp.bed
+# sort -k1,1 -k2,2n ${OUTDIR}/nanopore_28.temp.bed | uniq > ${OUTDIR}/nanopore_28.bed
+
+# echo "Processing 32hpi samples ..."
+# awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/32C1_to_pfal_0.95.0p.a.bed > ${OUTDIR}/nanopore_32.temp.bed
+# awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/32C2_to_pfal_0.95.0p.a.bed >> ${OUTDIR}/nanopore_32.temp.bed
+# sort -k1,1 -k2,2n ${OUTDIR}/nanopore_32.temp.bed | uniq > ${OUTDIR}/nanopore_32.bed
+
+# echo "Processing 36hpi samples ..."
+# awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/36C1_to_pfal_0.95.0p.a.bed > ${OUTDIR}/nanopore_36.temp.bed
+# awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/36C2_to_pfal_0.95.0p.a.bed >> ${OUTDIR}/nanopore_36.temp.bed
+# sort -k1,1 -k2,2n ${OUTDIR}/nanopore_36.temp.bed | uniq > ${OUTDIR}/nanopore_36.bed
+
+# # # FIND UNION
+# echo "Finding nanopore union ..."
+# cat ${OUTDIR}/nanopore_28.bed > ${OUTDIR}/nanopore_28u32u36.temp.bed
+# cat ${OUTDIR}/nanopore_32.bed >> ${OUTDIR}/nanopore_28u32u36.temp.bed
+# cat ${OUTDIR}/nanopore_36.bed >> ${OUTDIR}/nanopore_28u32u36.temp.bed
+# sort -k1,1 -k2,2n ${OUTDIR}/nanopore_28u32u36.temp.bed | uniq > ${OUTDIR}/nanopore_28u32u36.bed
+
+# ---------- FASTA EDITING ---------- #
+#m is negative strand M is forward strand
+
+# echo "Modifying genome FASTA ..."
+# awk 'BEGIN{OFS="\t"}
+# {
+#     pos = $2 + 1         # BED 0-based → VCF 1-based
+#     base = ($6=="-") ? "K" : "M"
+#     ref = ($6=="-") ? "T" : "A"
+#     print $1, pos, ".", ref, base, ".", "PASS", "."
+# }' ${OUTDIR}/nanopore_28u32u36.bed > ${OUTDIR}/nanopore_28u32u36.vcf
+
+# printf "##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n" \
+#   | cat - ${OUTDIR}/nanopore_28u32u36.vcf > ${OUTDIR}/nanopore_28u32u36_with_header.vcf
+
+# bgzip -c ${OUTDIR}/nanopore_28u32u36_with_header.vcf > ${OUTDIR}/nanopore_28u32u36_with_header.vcf.gz
+# tabix -p vcf ${OUTDIR}/nanopore_28u32u36_with_header.vcf.gz
+
+# bcftools consensus -f ${GENOME_FILE} ${OUTDIR}/nanopore_28u32u36_with_header.vcf.gz > ${OUTDIR}/plasmodium_genome_modified_motif.fasta
+
+rm -f ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
+touch ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
+
+for N in {30..30}; do
+  MOTIF=$(printf '%*sM%*sM%*sM%*sM' "$N" '' "$N" '' "$N" '' "$N" '' | tr ' ' '.')
+  echo ${MOTIF}
+
+  python3 ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${OUTDIR}/plasmodium_genome_modified_motif.fasta -o ${OUTDIR}/modified_motif_matches.tsv -m "${MOTIF}"
+
+  # filter low complexity matches
+  # COMPLEXITY_THRESHOLD=$(((N+1) * 2))
+  # COMPLEXITY_STRING=$(printf '%*s' "${COMPLEXITY_THRESHOLD}" '' | tr ' ' 'M')
+  COMPLEXITY_STRING="MMMM"
+  tail -n +2 ${OUTDIR}/modified_motif_matches.tsv | grep -v -- "$COMPLEXITY_STRING" | awk '{ sub(/\t+$/, ""); print }' | awk -F'\t' -v OFS='\t' -v N="$N" '{ $5 = N; print }' >> ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
+done
+
+awk '$3 ~ /^(five_prime_UTR|three_prime_UTR|CDS|ncRNA|rRNA|tRNA|snRNA|snoRNA)$/' ${ANNOTATION_FILE} > ${OUTDIR}/plasmodium_simple_feature.gff # get simple features to a single gff
+
+bedtools intersect -a ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed -b ${OUTDIR}/plasmodium_simple_feature.gff -wa -wb -s -loj | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$9}' > ${OUTDIR}/modified_matches.bed  # skip first line, trim trailing tabs
+# tail -n +2 ${OUTDIR}/unmodified_motif_matches.tsv | awk '{ sub(/\t+$/, ""); print }' | bedtools intersect -a - -b ${OUTDIR}/plasmodium_simple_feature.gff -wa -wb -s -loj | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$9}' > ${OUTDIR}/unmodified_matches.bed  # skip first line, trim trailing tabs
+
+cat ${OUTDIR}/modified_matches.bed
