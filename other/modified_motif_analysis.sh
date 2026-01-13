@@ -3,6 +3,7 @@
 set -e
 
 source ./env.sh
+source ${RQC_DIR}/env/bin/activate
 
 OUTDIR=$(pwd)/modified_motif_analysis_output
 mkdir -p ${OUTDIR}
@@ -14,7 +15,7 @@ READ_DEPTH=15
 M6A_RATIO=0.25
 
 # # ---------- NANOPORE BEDMETHYL PROCESSING ---------- #
-# # FILTER BEDMETHYLS FOR 15X COV AND 25% MOD PROP
+# FILTER BEDMETHYLS FOR 15X COV AND 25% MOD PROP
 # echo "Processing 28hpi samples ..."
 # awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/28C1_to_pfal_0.95.0p.a.bed > ${OUTDIR}/nanopore_28.temp.bed
 # awk -v READ_DEPTH=${READ_DEPTH} -v M6A_RATIO=${M6A_RATIO} '{if ($10 >= READ_DEPTH && ($12/($10+$17)*100) >= M6A_RATIO*100) print $1"\t"$2"\t"$3"\t"$4"\t"0"\t"$6}' ${BEDMETHYL_DIR}/28C2_to_pfal_0.95.0p.a.bed >> ${OUTDIR}/nanopore_28.temp.bed
@@ -38,7 +39,7 @@ M6A_RATIO=0.25
 # sort -k1,1 -k2,2n ${OUTDIR}/nanopore_28u32u36.temp.bed | uniq > ${OUTDIR}/nanopore_28u32u36.bed
 
 # ---------- FASTA EDITING ---------- #
-#m is negative strand M is forward strand
+# m is negative strand M is forward strand
 
 # echo "Modifying genome FASTA ..."
 # awk 'BEGIN{OFS="\t"}
@@ -60,7 +61,7 @@ M6A_RATIO=0.25
 rm -f ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
 touch ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
 
-for N in {30..30}; do
+for N in {1..8}; do
   MOTIF=$(printf '%*sM%*sM%*sM%*sM' "$N" '' "$N" '' "$N" '' "$N" '' | tr ' ' '.')
   echo ${MOTIF}
 
@@ -78,4 +79,7 @@ awk '$3 ~ /^(five_prime_UTR|three_prime_UTR|CDS|ncRNA|rRNA|tRNA|snRNA|snoRNA)$/'
 bedtools intersect -a ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed -b ${OUTDIR}/plasmodium_simple_feature.gff -wa -wb -s -loj | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$9}' > ${OUTDIR}/modified_matches.bed  # skip first line, trim trailing tabs
 # tail -n +2 ${OUTDIR}/unmodified_motif_matches.tsv | awk '{ sub(/\t+$/, ""); print }' | bedtools intersect -a - -b ${OUTDIR}/plasmodium_simple_feature.gff -wa -wb -s -loj | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$9}' > ${OUTDIR}/unmodified_matches.bed  # skip first line, trim trailing tabs
 
-cat ${OUTDIR}/modified_matches.bed
+sort -k1,1 -k2,2n ${OUTDIR}/modified_matches.bed > ${OUTDIR}/modified_matches.sorted.bed
+bedtools merge -s -c 4,5,6,7 -o first,first,first,first -i ${OUTDIR}/modified_matches.sorted.bed > ${OUTDIR}/modified_matches.sorted.merged.bed
+
+cat ${OUTDIR}/modified_matches.sorted.merged.bed
