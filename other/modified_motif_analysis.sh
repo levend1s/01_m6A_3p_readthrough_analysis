@@ -67,6 +67,11 @@ for N in {1..8}; do
 
   python3 ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${OUTDIR}/plasmodium_genome_modified_motif.fasta -o ${OUTDIR}/modified_motif_matches.tsv -m "${MOTIF}"
 
+  # unmodified motif
+  # LESS_N=$((N-1))
+  # UNMODIFIED_MOTIF=$(printf '%*sA[CT]%*sA[CT]%*sA[CT]%*sA[CT]' "$LESS_N" '' "$LESS_N" '' "$LESS_N" '' "$LESS_N" '' | tr ' ' '.')
+
+
   # filter low complexity matches
   # COMPLEXITY_THRESHOLD=$(((N+1) * 2))
   # COMPLEXITY_STRING=$(printf '%*s' "${COMPLEXITY_THRESHOLD}" '' | tr ' ' 'M')
@@ -83,3 +88,8 @@ sort -k1,1 -k2,2n ${OUTDIR}/modified_matches.bed > ${OUTDIR}/modified_matches.so
 bedtools merge -s -c 4,5,6,7 -o first,first,first,first -i ${OUTDIR}/modified_matches.sorted.bed > ${OUTDIR}/modified_matches.sorted.merged.bed
 
 cat ${OUTDIR}/modified_matches.sorted.merged.bed
+
+# now do the same but for unmodified repeats, so we have a negative control (ie tandem repeats without m6A modifications)
+
+# grab a window 5' of each motif match with respect to strand
+# enrich each window for motifs
