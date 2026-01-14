@@ -58,18 +58,20 @@ M6A_RATIO=0.25
 
 # bcftools consensus -f ${GENOME_FILE} ${OUTDIR}/nanopore_28u32u36_with_header.vcf.gz > ${OUTDIR}/plasmodium_genome_modified_motif.fasta
 
-rm -f ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
-touch ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
+rm -f ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed ${OUTDIR}/all_tandem_unmodified_motif_matches_filtered.bed
+touch ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed ${OUTDIR}/all_tandem_unmodified_motif_matches_filtered.bed
 
-for N in {1..8}; do
+for N in {5..8}; do
+  LESS_N=$((N-1))
+
   MOTIF=$(printf '%*sM%*sM%*sM%*sM' "$N" '' "$N" '' "$N" '' "$N" '' | tr ' ' '.')
   echo ${MOTIF}
-
   python3 ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${OUTDIR}/plasmodium_genome_modified_motif.fasta -o ${OUTDIR}/modified_motif_matches.tsv -m "${MOTIF}"
 
   # unmodified motif
-  # LESS_N=$((N-1))
-  # UNMODIFIED_MOTIF=$(printf '%*sA[CT]%*sA[CT]%*sA[CT]%*sA[CT]' "$LESS_N" '' "$LESS_N" '' "$LESS_N" '' "$LESS_N" '' | tr ' ' '.')
+  UNMODIFIED_MOTIF=$(printf '%*sA[C]%*sA[C]%*sA[C]%*sA[C]' "$LESS_N" '' "$LESS_N" '' "$LESS_N" '' "$LESS_N" '' | tr ' ' '.')
+  echo ${UNMODIFIED_MOTIF}
+  python3 ${RQC_PATH} motif_finder -a ${ANNOTATION_FILE} -g ${OUTDIR}/plasmodium_genome_modified_motif.fasta -o ${OUTDIR}/unmodified_motif_matches.tsv -m "${UNMODIFIED_MOTIF}"
 
 
   # filter low complexity matches
@@ -77,11 +79,17 @@ for N in {1..8}; do
   # COMPLEXITY_STRING=$(printf '%*s' "${COMPLEXITY_THRESHOLD}" '' | tr ' ' 'M')
   COMPLEXITY_STRING="MMMM"
   tail -n +2 ${OUTDIR}/modified_motif_matches.tsv | grep -v -- "$COMPLEXITY_STRING" | awk '{ sub(/\t+$/, ""); print }' | awk -F'\t' -v OFS='\t' -v N="$N" '{ $5 = N; print }' >> ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed
+  
+  COMPLEXITY_STRING="AAAA"
+  tail -n +2 ${OUTDIR}/unmodified_motif_matches.tsv | grep -v -- "$COMPLEXITY_STRING" | awk '{ sub(/\t+$/, ""); print }' | awk -F'\t' -v OFS='\t' -v N="$N" '{ $5 = N; print }' >> ${OUTDIR}/all_tandem_unmodified_motif_matches_filtered.bed
+
 done
 
 awk '$3 ~ /^(five_prime_UTR|three_prime_UTR|CDS|ncRNA|rRNA|tRNA|snRNA|snoRNA)$/' ${ANNOTATION_FILE} > ${OUTDIR}/plasmodium_simple_feature.gff # get simple features to a single gff
 
 bedtools intersect -a ${OUTDIR}/all_tandem_modified_motif_matches_filtered.bed -b ${OUTDIR}/plasmodium_simple_feature.gff -wa -wb -s -loj | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$9}' > ${OUTDIR}/modified_matches.bed  # skip first line, trim trailing tabs
+bedtools intersect -a ${OUTDIR}/all_tandem_unmodified_motif_matches_filtered.bed -b ${OUTDIR}/plasmodium_simple_feature.gff -wa -wb -s -loj | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$9}' > ${OUTDIR}/unmodified_matches.bed  # skip first line, trim trailing tabs
+
 # tail -n +2 ${OUTDIR}/unmodified_motif_matches.tsv | awk '{ sub(/\t+$/, ""); print }' | bedtools intersect -a - -b ${OUTDIR}/plasmodium_simple_feature.gff -wa -wb -s -loj | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$9}' > ${OUTDIR}/unmodified_matches.bed  # skip first line, trim trailing tabs
 
 sort -k1,1 -k2,2n ${OUTDIR}/modified_matches.bed > ${OUTDIR}/modified_matches.sorted.bed
@@ -89,7 +97,57 @@ bedtools merge -s -c 4,5,6,7 -o first,first,first,first -i ${OUTDIR}/modified_ma
 
 cat ${OUTDIR}/modified_matches.sorted.merged.bed
 
-# now do the same but for unmodified repeats, so we have a negative control (ie tandem repeats without m6A modifications)
+sort -k1,1 -k2,2n ${OUTDIR}/unmodified_matches.bed > ${OUTDIR}/unmodified_matches.sorted.bed
+bedtools merge -s -c 4,5,6,7 -o first,first,first,first -i ${OUTDIR}/unmodified_matches.sorted.bed > ${OUTDIR}/unmodified_matches.sorted.merged.bed
+
+cat ${OUTDIR}/unmodified_matches.sorted.merged.bed
 
 # grab a window 5' of each motif match with respect to strand
 # enrich each window for motifs
+
+bedtools flank \
+  -i features.bed \
+  -g genome.sizes \
+  -l 100 -r 0 \
+  -s \
+> features.upstream.bed
+
+bedtools getfasta \
+  -fi genome.fa \
+  -bed features.upstream.bed \
+  -s \
+  -name \
+> upstream.fa
+
+# background set
+bedtools shuffle \
+  -i features.bed \
+  -g genome.sizes \
+  > features.random.bed
+
+bedtools flank -i features.random.bed -g genome.sizes -l 100 -r 0 -s \
+| bedtools getfasta -fi genome.fa -bed - -s \
+> upstream.bg.fa
+
+# MEME
+meme upstream.fa \
+  -dna \
+  -mod zoops \
+  -minw 4 -maxw 10 \
+  -nmotifs 5 \
+  -bfile upstream.bg.fa \
+  -revcomp \
+  -o meme_upstream
+
+centrimo \
+  upstream.fa \
+  meme_upstream/meme.xml \
+  -o centrimo_out
+
+# HOMER
+findMotifs.pl \
+  upstream.fa \
+  fasta \
+  homer_out \
+  -fastaBg upstream.bg.fa \
+  -len 6,8,10
