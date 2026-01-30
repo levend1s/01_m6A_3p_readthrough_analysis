@@ -143,12 +143,9 @@ M6A_RATIO=0.25
 # --- expand IUPAC codes and find motif locations --- #
 
 # ALTERNATIVE: hardcode a motif to search for
-echo "AAAAAA" > ${OUTDIR}/motif_names.txt
-echo "UUUUUU" >> ${OUTDIR}/motif_names.txt
-echo "WWWWWW" >> ${OUTDIR}/motif_names.txt
-echo "SSSSSS" >> ${OUTDIR}/motif_names.txt
-
-
+echo "AAAA" > ${OUTDIR}/motif_names.txt
+echo "UUUU" >> ${OUTDIR}/motif_names.txt
+# echo "WWWWWWWW" >> ${OUTDIR}/motif_names.txt
 
 
 # # loop through each line
@@ -198,3 +195,7 @@ python3 ${RQC_PATH} calculate_offsets -s -b -d 500 -r ${GLORI_X_NANOPORE_DIR}/na
 python3 ${RQC_PATH} plot_relative_distance -l "canonical m6A" -d 500 -i ${OUTDIR}/motiff_offsets.tsv -o ${OUTDIR}/motiff_offsets.png
 
 # I can update this calculate offsets function to search a narrower window, to try and identify sites which have no U rich motif within 50nt or so
+
+# TODO: do the poly U offsets based off canonical m6A sites, randomly sampled sites, methylated DRACH sites, and unmethylated DRACH sites
+# Investigate whether this holds tru for exonic m6A sites, UTR m6a sites
+# look for extreme examples, long UTRs with no U-islands until the end, extremely short UTR's with the bare minumum information required for m6A methylation
