@@ -5,6 +5,9 @@ FEATURECOUNTS_PATH="/Users/jlevendis/Downloads/subread-2.1.1-macOS-arm64/bin/fea
 MODKIT_PATH="/Users/jlevendis/modkit/target/debug/modkit"
 RQC_DIR="/Users/jlevendis/rqc"
 RQC_PATH="${RQC_DIR}/rqc.py"
+MEME_PATH="/Users/jlevendis/meme/bin/meme"
+CENTRIMO_PATH="/Users/jlevendis/meme/bin/centrimo"
+
 
 PLASMODB_DIR="/Users/jlevendis/Downloads/Pfalciparum3D7/"
 ANNOTATION_FILE="${PLASMODB_DIR}/gff/data/PlasmoDB-67_Pfalciparum3D7.gff"

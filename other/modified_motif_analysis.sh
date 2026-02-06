@@ -143,9 +143,11 @@ M6A_RATIO=0.25
 # --- expand IUPAC codes and find motif locations --- #
 
 # ALTERNATIVE: hardcode a motif to search for
-echo "AAAA" > ${OUTDIR}/motif_names.txt
-echo "UUUU" >> ${OUTDIR}/motif_names.txt
-# echo "WWWWWWWW" >> ${OUTDIR}/motif_names.txt
+echo "UUUUUU" >> ${OUTDIR}/motif_names.txt
+echo "WWWWWW" >> ${OUTDIR}/motif_names.txt
+echo "AUAUAU" >> ${OUTDIR}/motif_names.txt
+
+
 
 
 # # loop through each line
