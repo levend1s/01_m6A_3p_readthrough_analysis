@@ -1,20 +1,11 @@
 library(ggplot2)
 library(scales)
-library(dplyr)
-library(ggExtra)
-library(patchwork)
-library(ggpubr)
-
-
 
 args <- commandArgs(trailingOnly = TRUE)
-path <- args[1]
+path_all <- args[1]
 timepoint <- args[2]
-out_dir <- args[3]
-
-path_all <- "/Users/jlevendis/Library/CloudStorage/OneDrive-TheUniversityofMelbourne/single_molecule_m6a_analysis.tsv"
-timepoint <- "28"
-out_dir <- "lala"
+ext <- args[3]
+out_dir <- args[4]
 
 p_breaks <- c(0.01, 0.1, 0.5, 0.95, 0.99)
 
@@ -76,17 +67,16 @@ group_k2 <- k2_28_common
 group_control_average <- control_28_average
 group_ks_average <- ks_28_average
 
-
 # Plot 3 graphs: all samples for a timepoint
 # (methylated x unmethylated) x group: averages
 # knock sideways: averages unmethylated vs unmethylated
 
-
 # ----- histogram: control vs knocksideways all samples ----- #
 
 alpha <- 0.3
+plot_name <- paste(out_dir, "/m6A_tes_predictor_all_samples", timepoint, "hpi.", ext, sep="")
 
-ggplot() +
+p <- ggplot() +
   geom_density(
     aes(x = group_c1$probability_with_mods, fill = "methylated transcripts (c1)"),
     alpha = alpha,
@@ -144,9 +134,21 @@ ggplot() +
     y = "Density"
   )
 
+ggsave(
+  filename = plot_name,   # output filename
+  plot = p,                  # ggplot object
+  device = ext,            # EPS format
+  width = 10,                 # width in inches
+  height = 4.8,                # height in inches
+  units = "in",              # units (inches, cm, mm)
+  dpi = 300                  # resolution, optional (ignored by EPS)
+)
+
 # ----- histogram: control vs knocksideways averages ----- #
 
-ggplot() +
+plot_name <- paste(out_dir, "/m6A_tes_predictor_ks", timepoint, "hpi.", ext, sep="")
+
+p <- ggplot() +
   geom_density(
     aes(x = group_ks_average$weighted_avg_probability_with_mods, fill = "methylated transcripts (knock-sideways)"),
     alpha = alpha,
@@ -157,16 +159,6 @@ ggplot() +
     alpha = alpha,
     linewidth = 1
   ) +
-  # scale_fill_brewer(palette = "Set2") +
-  # scale_fill_manual(
-  #   name   = "",
-  #   values = c(
-  #     "methylated transcripts (control)"   = "#1f77b4",
-  #     "unmethylated transcripts (control)" = "#ff7f0e",
-  #     "methylated transcripts (knock-sideways)" = "#1f77b4",
-  #     "unmethylated transcripts (knock-sideways)" = "#ff7f0e"
-  #   )
-  # ) +
   scale_color_brewer(palette = "Set1") +
   scale_x_continuous(
     labels = percent_format(accuracy = 1)
@@ -177,10 +169,21 @@ ggplot() +
     y = "Density"
   )
 
+ggsave(
+  filename = plot_name,   # output filename
+  plot = p,                  # ggplot object
+  device = ext,            # EPS format
+  width = 10,                 # width in inches
+  height = 4.8,                # height in inches
+  units = "in",              # units (inches, cm, mm)
+  dpi = 300                  # resolution, optional (ignored by EPS)
+)
 
 # ----- histogram: control vs knocksideways averages ----- #
 
-ggplot() +
+plot_name <- paste(out_dir, "/m6A_tes_predictor_averages", timepoint, "hpi.", ext, sep="")
+
+p <- ggplot() +
   geom_density(
     aes(x = group_control_average$weighted_avg_probability_with_mods, fill = "methylated transcripts (control)"),
     alpha = alpha,
@@ -220,6 +223,16 @@ ggplot() +
     x = "Probability",
     y = "Density"
   )
+
+ggsave(
+  filename = plot_name,   # output filename
+  plot = p,                  # ggplot object
+  device = ext,            # EPS format
+  width = 10,                 # width in inches
+  height = 4.8,                # height in inches
+  units = "in",              # units (inches, cm, mm)
+  dpi = 300                  # resolution, optional (ignored by EPS)
+)
 
 
 wilcox.test(c1_28_common$probability_with_mods, c2_28_common$probability_with_mods)
