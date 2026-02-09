@@ -58,3 +58,7 @@ echo "36K2_m6A_0.95 knock-sideways bedmethyl ${BEDMETHYL_DIR}/36K2_to_pfal_0.95.
 
 OUTPUT_FILE=${OUTDIR}/single_molecule_m6a_analysis.tsv
 python3 ${RQC_PATH} m6A_tes_predictor_analysis -a ${ANNOTATION_FILE} -i ${M6A_SAMPLES} --type mRNA --exclude_contigs Pf3D7_API_v3 Pf3D7_MIT_v3 --poly_a_filter ${POLY_A_FILTER} -d ${READ_DEPTH} --offset_padding ${PADDING} --tes_distance_threshold ${TES_DISTANCE_THRESHOLD} --mod_ratio ${M6A_RATIO} -o ${OUTPUT_FILE}
+
+
+
+# split output file by label (second column)
