@@ -156,18 +156,8 @@ p <- ggplot() +
     fill = ""
   )
 
-p <- ggsave(
-  filename = out_file,   # output filename
-  plot = p,                  # ggplot object
-  device = ext,            # EPS format
-  width = 10,                 # width in inches
-  height = 4.8,                # height in inches
-  units = "in",              # units (inches, cm, mm)
-  dpi = 300                  # resolution, optional (ignored by EPS)
-)
-
 ggsave(
-  filename = plot_name,   # output filename
+  filename = out_file,   # output filename
   plot = p,                  # ggplot object
   device = ext,            # EPS format
   width = 10,                 # width in inches
@@ -210,7 +200,7 @@ p <- ggplot() +
 
 p
 
-p <- ggsave(
+ggsave(
   filename = out_file,   # output filename
   plot = p,                  # ggplot object
   device = ext,            # EPS format
@@ -303,7 +293,7 @@ p <- ggplot(
 
 p
 
-p <- ggsave(
+ggsave(
   filename = out_file,   # output filename
   plot = p,                  # ggplot object
   device = ext,            # EPS format
