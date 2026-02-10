@@ -1,13 +1,32 @@
 library(ggplot2)
 library(scales)
+library(dplyr)
+library(tidyr)
+library(ggsignif)
+
+pval_to_signif <- function(p) {
+  if (p < 0.0001) {
+    return("****")
+  } else if (p < 0.001) {
+    return("***")
+  } else if (p < 0.01) {
+    return("**")
+  } else if (p < 0.05) {
+    return("*")
+  } else {
+    return("ns")   # not significant
+  }
+}
 
 args <- commandArgs(trailingOnly = TRUE)
 path_all <- args[1]
 timepoint <- args[2]
-ext <- args[3]
+ext = args[3]
 out_dir <- args[4]
 
-p_breaks <- c(0.01, 0.1, 0.5, 0.95, 0.99)
+# path_all <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/11_single_molecule_analysis_output/single_molecule_m6a_analysis.tsv" 
+
+p_breaks <- c(0, 0.25, 0.5, 0.75, 1.0)
 
 df_all <- read.delim(path_all, header=TRUE)
 df_all$ID_start <- paste(df_all$ID, df_all$mod_start, sep = "-")
@@ -76,6 +95,8 @@ group_ks_average <- ks_28_average
 alpha <- 0.3
 plot_name <- paste(out_dir, "/m6A_tes_predictor_all_samples", timepoint, "hpi.", ext, sep="")
 
+out_file <- paste0(out_dir, "/", timepoint, "_all_samples_m6a_tes_predictor.", ext)
+
 p <- ggplot() +
   geom_density(
     aes(x = group_c1$probability_with_mods, fill = "methylated transcripts (c1)"),
@@ -131,8 +152,19 @@ p <- ggplot() +
   theme_classic(base_size = 20) +
   labs(
     x = "Probability",
-    y = "Density"
+    y = "Density",
+    fill = ""
   )
+
+p <- ggsave(
+  filename = out_file,   # output filename
+  plot = p,                  # ggplot object
+  device = ext,            # EPS format
+  width = 10,                 # width in inches
+  height = 4.8,                # height in inches
+  units = "in",              # units (inches, cm, mm)
+  dpi = 300                  # resolution, optional (ignored by EPS)
+)
 
 ggsave(
   filename = plot_name,   # output filename
@@ -146,100 +178,145 @@ ggsave(
 
 # ----- histogram: control vs knocksideways averages ----- #
 
-plot_name <- paste(out_dir, "/m6A_tes_predictor_ks", timepoint, "hpi.", ext, sep="")
+out_file <- paste0(out_dir, "/", timepoint, "_knocksideways_m6a_tes_predictor.", ext)
+
+num_bins <- 100
+
+alpha <- 0.6
 
 p <- ggplot() +
-  geom_density(
-    aes(x = group_ks_average$weighted_avg_probability_with_mods, fill = "methylated transcripts (knock-sideways)"),
+  geom_histogram(
+    aes(x = group_ks_average$weighted_avg_probability_with_mods, fill = "methylated"),
     alpha = alpha,
-    linewidth = 1
+    linewidth = 1,
+    bins = num_bins
   ) +
-  geom_density(
-    aes(x = group_ks_average$weighted_avg_probability_without_mods, fill = "unmethylated transcripts (knock-sideways)"),
+  geom_histogram(
+    aes(x = group_ks_average$weighted_avg_probability_without_mods, fill = "unmethylated"),
     alpha = alpha,
-    linewidth = 1
+    linewidth = 1,
+    bins = num_bins
   ) +
-  scale_color_brewer(palette = "Set1") +
-  scale_x_continuous(
-    labels = percent_format(accuracy = 1)
-  ) +
-  theme_classic(base_size = 20) +
-  labs(
-    x = "Probability",
-    y = "Density"
-  )
-
-ggsave(
-  filename = plot_name,   # output filename
-  plot = p,                  # ggplot object
-  device = ext,            # EPS format
-  width = 10,                 # width in inches
-  height = 4.8,                # height in inches
-  units = "in",              # units (inches, cm, mm)
-  dpi = 300                  # resolution, optional (ignored by EPS)
-)
-
-# ----- histogram: control vs knocksideways averages ----- #
-
-plot_name <- paste(out_dir, "/m6A_tes_predictor_averages", timepoint, "hpi.", ext, sep="")
-
-p <- ggplot() +
-  geom_density(
-    aes(x = group_control_average$weighted_avg_probability_with_mods, fill = "methylated transcripts (control)"),
-    alpha = alpha,
-    linewidth = 1
-  ) +
-  geom_density(
-    aes(x = group_control_average$weighted_avg_probability_without_mods, fill = "unmethylated transcripts (control)"),
-    alpha = alpha,
-    linewidth = 1
-  ) +
-  geom_density(
-    aes(x = group_ks_average$weighted_avg_probability_with_mods, fill = "methylated transcripts (knock-sideways)"),
-    alpha = alpha,
-    linewidth = 1
-  ) +
-  geom_density(
-    aes(x = group_ks_average$weighted_avg_probability_without_mods, fill = "unmethylated transcripts (knock-sideways)"),
-    alpha = alpha,
-    linewidth = 1
-  ) +
-  # scale_fill_brewer(palette = "Set2") +
-  # scale_fill_manual(
-  #   name   = "",
-  #   values = c(
-  #     "methylated transcripts (control)"   = "#1f77b4",
-  #     "unmethylated transcripts (control)" = "#ff7f0e",
-  #     "methylated transcripts (knock-sideways)" = "#1f77b4",
-  #     "unmethylated transcripts (knock-sideways)" = "#ff7f0e"
-  #   )
+  scale_fill_brewer(palette = "Set2") +
+  # scale_x_continuous(
+  #   labels = percent_format(accuracy = 1)
   # ) +
-  scale_color_brewer(palette = "Set1") +
-  scale_x_continuous(
-    labels = percent_format(accuracy = 1)
-  ) +
   theme_classic(base_size = 20) +
   labs(
     x = "Probability",
-    y = "Density"
+    y = "Count",
+    fill = ""
   )
 
-ggsave(
-  filename = plot_name,   # output filename
+p
+
+p <- ggsave(
+  filename = out_file,   # output filename
   plot = p,                  # ggplot object
   device = ext,            # EPS format
-  width = 10,                 # width in inches
+  width = 7.4,                 # width in inches
   height = 4.8,                # height in inches
   units = "in",              # units (inches, cm, mm)
   dpi = 300                  # resolution, optional (ignored by EPS)
 )
 
 
-wilcox.test(c1_28_common$probability_with_mods, c2_28_common$probability_with_mods)
-wilcox.test(k1_28_common$probability_with_mods, k2_28_common$probability_with_mods)
-wilcox.test(c1_28_common$probability_with_mods, k1_28_common$probability_with_mods)
+# ----- histogram: control vs knocksideways averages ----- #
 
-wilcox.test(group_control_average$weighted_avg_probability_with_mods, group_ks_average$weighted_avg_probability_with_mods)
-wilcox.test(group_control_average$weighted_avg_probability_without_mods, group_ks_average$weighted_avg_probability_without_mods)
+out_file <- paste0(out_dir, "/", timepoint, "_sample_average_m6a_tes_predictor.", ext)
+
+cm_ksm <- wilcox.test(group_control_average$weighted_avg_probability_with_mods, group_ks_average$weighted_avg_probability_with_mods)
+cm_cu <- wilcox.test(group_control_average$weighted_avg_probability_with_mods, group_control_average$weighted_avg_probability_without_mods)
+ksm_ksu <- wilcox.test(group_ks_average$weighted_avg_probability_with_mods, group_ks_average$weighted_avg_probability_without_mods)
+cu_ksu <- wilcox.test(group_control_average$weighted_avg_probability_without_mods, group_ks_average$weighted_avg_probability_without_mods)
+
+df <- bind_rows(
+  tibble(
+    probability = group_control_average$weighted_avg_probability_with_mods,
+    condition = "control",
+    methylation = "methylated"
+  ),
+  tibble(
+    probability = group_control_average$weighted_avg_probability_without_mods,
+    condition = "control",
+    methylation = "unmethylated"
+  ),
+  tibble(
+    probability = group_ks_average$weighted_avg_probability_with_mods,
+    condition = "knock-sideways",
+    methylation = "methylated"
+  ),
+  tibble(
+    probability = group_ks_average$weighted_avg_probability_without_mods,
+    condition = "knock-sideways",
+    methylation = "unmethylated"
+  )
+)
+
+p <- ggplot(
+  df,
+  aes(
+    x = condition,
+    y = probability,
+    fill = methylation
+  )
+) +
+  geom_violin(
+    position = position_dodge(width = 0.8),
+    alpha = alpha,
+    linewidth = 1,
+    trim = TRUE
+  ) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_y_continuous(
+    # labels = percent_format(accuracy = 1),
+    breaks = p_breaks
+  ) +
+  labs(
+    x = "",
+    # y = expression("Probability tx ends within 100nt of canonical m"^6 * "A"),
+    y = "Probability",
+    fill = ""
+  ) +
+  geom_signif(
+    xmin = c(0.8, 1.8),
+    xmax = c(1.2, 2.2),
+    y_position = c(1.05, 1.05),
+    annotations = c(pval_to_signif(cm_cu$p.value), pval_to_signif(ksm_ksu$p.value)),
+    tip_length = 0.01
+  ) +
+  geom_signif(
+    xmin = c(0.8),
+    xmax = c(1.8),
+    y_position = 1.15,
+    annotations = pval_to_signif(cm_ksm$p.value),
+    tip_length = 0.01
+  ) +
+  geom_signif(
+    xmin = c(1.2),
+    xmax = c(2.2),
+    y_position = 1.25,
+    annotations = pval_to_signif(cu_ksu$p.value),
+    tip_length = 0.01
+  ) +
+  theme_classic(base_size = 20)
+
+p
+
+p <- ggsave(
+  filename = out_file,   # output filename
+  plot = p,                  # ggplot object
+  device = ext,            # EPS format
+  width = 7.4,                 # width in inches
+  height = 4.8,                # height in inches
+  units = "in",              # units (inches, cm, mm)
+  dpi = 300                  # resolution, optional (ignored by EPS)
+)
+
+# Do methylated transcripts across all samples come from the same distributuion? 
+kruskal.test(list(group_c1$probability_with_mods, group_c2$probability_with_mods, group_k1$probability_with_mods, group_k2$probability_with_mods))
+
+# Do UNMETHYLATED transcripts across all samples come from the same distributuion? 
+kruskal.test(list(group_c1$probability_without_mods, group_c2$probability_without_mods, group_k1$probability_without_mods, group_k2$probability_without_mods))
 
   

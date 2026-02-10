@@ -56,11 +56,15 @@ mkdir -p ${OUTDIR}
 # echo "36K2_m6A_0.95 knock-sideways bedmethyl ${BEDMETHYL_DIR}/36K2_to_pfal_0.95.0p.a.bed" >> ${M6A_SAMPLES}
 
 
-# OUTPUT_FILE=${OUTDIR}/single_molecule_m6a_analysis.tsv
+OUTPUT_FILE=${OUTDIR}/single_molecule_m6a_analysis.tsv
 # python3 ${RQC_PATH} m6A_tes_predictor_analysis -a ${ANNOTATION_FILE} -i ${M6A_SAMPLES} --type mRNA --exclude_contigs Pf3D7_API_v3 Pf3D7_MIT_v3 --poly_a_filter ${POLY_A_FILTER} -d ${READ_DEPTH} --offset_padding ${PADDING} --tes_distance_threshold ${TES_DISTANCE_THRESHOLD} --mod_ratio ${M6A_RATIO} -o ${OUTPUT_FILE}
 
+Rscript R/m6A_tes_predictor_analysis.R ${OUTPUT_FILE} "28" "png" ${OUTDIR}
+Rscript R/m6A_tes_predictor_analysis.R ${OUTPUT_FILE} "28" "pdf" ${OUTDIR}
 
-Rscript R/m6A_tes_predictor_analysis.R ${OUTDIR}/single_molecule_m6a_analysis.tsv "28" "png" ${OUTDIR}
-Rscript R/m6A_tes_predictor_analysis.R ${OUTDIR}/single_molecule_m6a_analysis.tsv "32" "png" ${OUTDIR}
-Rscript R/m6A_tes_predictor_analysis.R ${OUTDIR}/single_molecule_m6a_analysis.tsv "36" "png" ${OUTDIR}
+Rscript R/m6A_tes_predictor_analysis.R ${OUTPUT_FILE} "32" "png" ${OUTDIR}
+Rscript R/m6A_tes_predictor_analysis.R ${OUTPUT_FILE} "32" "pdf" ${OUTDIR}
+
+Rscript R/m6A_tes_predictor_analysis.R ${OUTPUT_FILE} "36" "png" ${OUTDIR}
+Rscript R/m6A_tes_predictor_analysis.R ${OUTPUT_FILE} "36" "pdf" ${OUTDIR}
 
