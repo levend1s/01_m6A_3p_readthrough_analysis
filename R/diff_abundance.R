@@ -68,6 +68,13 @@ name_no_ext <- file_path_sans_ext(out_file)
 
 md_file <- paste0(name_no_ext, "_md.", ext)
 
+p <- p +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
+
 ggsave(
     filename = md_file,   # output filename
     plot = p,                  # ggplot object
@@ -75,6 +82,7 @@ ggsave(
     width = 6,                 # width in inches
     height = 4.8,                # height in inches
     units = "in",              # units (inches, cm, mm)
+    bg = "transparent",
     dpi = 300                  # resolution, optional (ignored by EPS)
 )
 

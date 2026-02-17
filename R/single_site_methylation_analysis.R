@@ -218,11 +218,18 @@ all_no_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
+  )
+
+all_no_fdr <- all_no_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
   )
 
 ggsave(filename=paste0(name_no_ext, "_all.", ext), plot = all_no_fdr, device=ext, dpi=300, width=7, height=4.8, units="in")
@@ -237,11 +244,18 @@ all_with_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
+  )
+
+all_with_fdr <- all_with_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
   )
 
 ggsave(filename=paste0(name_no_ext, "_all_fdr", FDR_CUTOFF, ".", ext), plot = all_with_fdr, device=ext, dpi=300, width=7, height=4.8, units="in")
@@ -265,11 +279,18 @@ all_no_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
+  )
+
+all_no_fdr <- all_no_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
   )
 
 ggsave(filename=paste0(name_no_ext, "_ncrna.", ext), plot = all_no_fdr, device=ext, dpi=300, width=7, height=4.8, units="in")
@@ -284,11 +305,18 @@ all_with_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
+  )
+
+all_with_fdr <- all_with_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
   )
 
 ggsave(filename=paste0(name_no_ext, "_ncrna_fdr.", FDR_CUTOFF, ".", ext), plot = all_with_fdr, device=ext, dpi=300, width=7, height=4.8, units="in")
@@ -312,12 +340,20 @@ all_no_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
   )
+
+all_no_fdr <- all_no_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
+
 
 ggsave(filename=paste0(name_no_ext, "_unmapped.", ext), plot = all_no_fdr, device=ext, dpi=300, width=6, height=4.8, units="in")
 
@@ -331,12 +367,20 @@ all_with_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
   )
+
+all_with_fdr <- all_with_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
+
 
 ggsave(filename=paste0(name_no_ext, "_unmapped_fdr.", FDR_CUTOFF, ".", ext), plot = all_with_fdr, device=ext, dpi=300, width=7, height=4.8, units="in")
 
@@ -359,11 +403,18 @@ all_no_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
+  )
+
+all_no_fdr <- all_no_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
   )
 
 ggsave(filename=paste0(name_no_ext, "_mrna.", ext), plot = all_no_fdr, device=ext, dpi=300, width=7, height=4.8, units="in")
@@ -378,11 +429,18 @@ all_with_fdr <- ggplot() +
   labs(x = expression(m^6 * "A / A (%)"), y = "log2 FC") +
   theme_classic(base_size = 20) +
   # scale_size_continuous(range = c(2, 10)) +
-  scale_color_manual(values = c("rRNA" = "#468e8c", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
+  scale_color_manual(values = c("rRNA" = "#56B4E9", "ncRNA" = "#bd4f77", "UTR" = "#f9e955", "None" = "lightgrey", "CDS" = "#3e0751", "Unmapped" = "#7ac56e", "snoRNA" = "#ea9953", "up" = "red", "down" = "blue")) +
   scale_x_continuous(
     breaks = log(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) /
                    (1 - c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99))),
     labels = paste0(c(0, 0.01, 0.05, 0.25, 0.75, 0.95, 0.99) * 100, "%")
+  )
+
+all_with_fdr <- all_with_fdr +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
   )
 
 ggsave(filename=paste0(name_no_ext, "_mrna_fdr.", FDR_CUTOFF, ".", ext), plot = all_with_fdr, device=ext, dpi=300, width=7, height=4.8, units="in")

@@ -100,16 +100,25 @@ ggsave(filename=paste0(name_no_ext, "_screeplot.", ext), plot = screeplot, devic
 
 pca_plot <- ggplot(pca_df, aes(x=PC1, y=PC2, color=group, shape=time)) +
   geom_point(size=4) +
-  # stat_ellipse(aes(group = Cluster), type = "norm", level = 0.8) +
   labs(
     x = paste0("PC1 (", var_exp[1], "%)"),
-    y = paste0("PC2 (", var_exp[2], "%)")
+    y = paste0("PC2 (", var_exp[2], "%)"),
+    color = "treatment",
+    shape = "timepoint (hpi)"
   ) +
   theme_classic(base_size = 20) +
   theme(
-    legend.position = "right",     # legend outside
+    legend.position = "right",
     legend.box = "vertical",
     plot.title = element_text(hjust=0.5)
+  ) +
+  scale_color_manual(values = c("#1bb6bb", "#f46b64"))
+
+pca_plot <- pca_plot +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA)
+    # legend.title = element_blank()
   )
 
 # export 740x480

@@ -94,11 +94,18 @@ total_plot <- ggplot(my_data, aes(x = x, y = y, fill = m)) +
     size = 1
   ) +
   theme_classic(base_size = 20) +
-  theme(legend.position = "none") +
+  # theme(legend.position = "none") +
   # geom_line(aes(group = m), color = "gray70", alpha = 0.5) + # connect pairs
   scale_x_discrete(name = "", labels = c(sprintf('28 hpi\n(n=%d)', num_points_28), sprintf('32 hpi\n(n=%d)', num_points_32), sprintf('36 hpi\n(n=%d)', num_points_36))) +
   scale_y_continuous(name = y_title, limits = lims, expand = c(0, 0)) + 
   scale_fill_manual(values = c("#1bb6bb", "#f46b64"))
+
+total_plot <- total_plot +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
 
 ggsave(filename=paste0(name_no_ext, "_total_wam.", ext), plot = total_plot, device=ext, dpi=300, width=6, height=4.8, units="in")
 
@@ -173,6 +180,13 @@ canonical_plot <- ggplot(my_data, aes(x = x, y = y, fill = m)) +
   scale_y_continuous(name = y_title, limits = lims, expand = c(0, 0)) + 
   scale_fill_manual(values = c("#1bb6bb", "#f46b64"))
 
+canonical_plot <- canonical_plot +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
+
 ggsave(filename=paste0(name_no_ext, "_canonical_wam.", ext), plot = canonical_plot, device=ext, dpi=300, width=6, height=4.8, units="in")
 
 
@@ -243,5 +257,12 @@ non_canonical_plot <- ggplot(my_data, aes(x = x, y = y, fill = m)) +
   scale_x_discrete(name = "", labels = c(sprintf('28 hpi\n(n=%d)', num_points_28), sprintf('32 hpi\n(n=%d)', num_points_32), sprintf('36 hpi\n(n=%d)', num_points_36))) +
   scale_y_continuous(name = y_title, limits = lims, expand = c(0, 0)) + 
   scale_fill_manual(values = c("#1bb6bb", "#f46b64"))
+
+non_canonical_plot <- non_canonical_plot +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
 
 ggsave(filename=paste0(name_no_ext, "_non_canonical_wam.", ext), plot = non_canonical_plot, device=ext, dpi=300, width=6, height=4.8, units="in")

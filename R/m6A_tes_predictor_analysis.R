@@ -156,6 +156,13 @@ p <- ggplot() +
     fill = ""
   )
 
+p <- p +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
+
 ggsave(
   filename = out_file,   # output filename
   plot = p,                  # ggplot object
@@ -163,6 +170,7 @@ ggsave(
   width = 10,                 # width in inches
   height = 4.8,                # height in inches
   units = "in",              # units (inches, cm, mm)
+  bg = "transparent",
   dpi = 300                  # resolution, optional (ignored by EPS)
 )
 
@@ -200,6 +208,13 @@ p <- ggplot() +
 
 p
 
+p <- p +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
+
 ggsave(
   filename = out_file,   # output filename
   plot = p,                  # ggplot object
@@ -207,6 +222,7 @@ ggsave(
   width = 7.4,                 # width in inches
   height = 4.8,                # height in inches
   units = "in",              # units (inches, cm, mm)
+  bg = "transparent",
   dpi = 300                  # resolution, optional (ignored by EPS)
 )
 
@@ -293,10 +309,18 @@ p <- ggplot(
 
 p
 
+p <- p +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background  = element_rect(fill = "transparent", color = NA),
+    legend.title = element_blank()
+  )
+
 ggsave(
   filename = out_file,   # output filename
   plot = p,                  # ggplot object
   device = ext,            # EPS format
+  bg = "transparent",
   width = 7.4,                 # width in inches
   height = 4.8,                # height in inches
   units = "in",              # units (inches, cm, mm)
