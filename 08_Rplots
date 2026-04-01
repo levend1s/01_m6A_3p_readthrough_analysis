@@ -31,8 +31,8 @@ mkdir -p ${OUTDIR}
 # Rscript R/pca_wam.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_raw.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_raw.tsv ${GAF_FILE} ${OUTDIR}/pca_wam.png
 
 # # Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
-Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
-Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.png
+# Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.eps
+# Rscript R/pca_chimeric.R ${FEATURECOUNTS_DIR}/subread_featureCounts_results_chimeric.txt ${GAF_FILE} ${OUTDIR}/pca_chimeric.png
 
 # # Differential methylation (WAM)
 # Rscript R/wam_analysis.R ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_28hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_32hpi_compare.tsv ${TES_ANALYSIS_DIR}/mRNA_methylation_analysis_36hpi_compare.tsv ${OUTDIR}/wam_analysis.eps

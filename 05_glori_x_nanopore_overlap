@@ -13,8 +13,8 @@ source ${RQC_DIR}/env/bin/activate
 # - nanopore_${TIMEPOINT}.bed
 # - glori_${TIMEPOINT}.bed
 
-READ_DEPTH=15
-M6A_RATIO=0.25
+READ_DEPTH=10
+M6A_RATIO=0.75
 
 OUTDIR=$(pwd)/05_glori_x_nanopore_overlap_output
 mkdir -p ${OUTDIR}
@@ -49,6 +49,8 @@ cat ${OUTDIR}/nanopore_28.bed > ${OUTDIR}/nanopore_28u32u36.temp.bed
 cat ${OUTDIR}/nanopore_32.bed >> ${OUTDIR}/nanopore_28u32u36.temp.bed
 cat ${OUTDIR}/nanopore_36.bed >> ${OUTDIR}/nanopore_28u32u36.temp.bed
 sort -k1,1 -k2,2n ${OUTDIR}/nanopore_28u32u36.temp.bed | uniq > ${OUTDIR}/nanopore_28u32u36.bed
+
+exit(0)
 
 # # FIND INTERSECTIONS
 echo "Finding nanopore intersections ..."
