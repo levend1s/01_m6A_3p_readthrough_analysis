@@ -20,40 +20,37 @@ transcript_columns <- as.numeric(strsplit(args[4], ",")[[1]])
 gaf_file <- args[5]
 out_file <- args[6]
 
+# ---------- interactive
+chimeric_matrix <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/03_featureCounts_output/subread_featureCounts_results_chimeric.txt"
+chimeric_columns <- c(1,2,3,4)
+transcript_matrix <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/03_featureCounts_output/subread_featureCounts_results"
+transcript_columns <- c(6,7,8,9)
+
+mRNA_ids_file <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/03_featureCounts_output/mRNA_ids.txt"
+
 # ---------- chimeric DE (interaction term between treatment AND chimeric/bulk count, figure 5C)
-
-# export ANNOTATION=~/Documents/RNA/honours/Pfalciparum3D7/gff/data/PlasmoDB-67_Pfalciparum3D7.gff      
-# awk '$3=="mRNA" {split ($9,x,/[=;]/); print x[2]}' ${ANNOTATION} > pfal_mRNA_list.tsv
-# awk 'NR==FNR { gsub(/\..*$/, "", $1); keep[$1]=1; next } NR==1 { print; next } { if($1 in keep) print }' pfal_mRNA_list.tsv ~/rqc/output/8.3_featureCounts_chimeric.txt > ~/rqc/output/8.3_featureCounts_chimeric_mRNAs.txt 
-
-# count_matrix_chimeric <- "~/rqc/output/8.3_featureCounts_chimeric_mRNAs.txt"
-# count_matrix <- "~/rqc/output/8.3_featureCounts"
-
 x_chimeric <- read.delim(chimeric_matrix, header=TRUE, row.names="Geneid")
 x <- read.delim(transcript_matrix, header=TRUE, skip=1, row.names="Geneid")
-
-# x <- x[rownames(x) %in% rownames(x_chimeric), ]
-# x_chimeric <- x_chimeric[ !grepl("API|MIT", rownames(x_chimeric), ignore.case = TRUE), , drop = FALSE ]
-# x <- x[ !grepl("API|MIT", rownames(x), ignore.case = TRUE), , drop = FALSE ]
 
 x_chimeric <- x_chimeric[ !grepl("API|MIT", rownames(x_chimeric), ignore.case = TRUE), , drop = FALSE ]
 x <- x[ !grepl("API|MIT", rownames(x), ignore.case = TRUE), , drop = FALSE ]
 
+mRNA_ids <- readLines(mRNA_ids_file)
+# Subset df by rownames
+x_chimeric <- x_chimeric[rownames(x_chimeric) %in% genes_keep, ]
+x <- x[rownames(x) %in% genes_keep, ]
+
+identical(rownames(x_chimeric), rownames(x))
+
 columns_chimeric <- x_chimeric[,chimeric_columns]
 columns <- x[,transcript_columns]
 not_chimeric <- columns - columns_chimeric
-
-# merged_df <- cbind(columns_chimeric, not_chimeric)
-# colnames(merged_df) <- c("C1_CHIMERIC", "C2_CHIMERIC", "K1_CHIMERIC", "K2_CHIMERIC", "C1_NOTCHIMERIC", "C2_NOTCHIMERIC", "K1_NOTCHIMERIC", "K2_NOTCHIMERIC")
 
 merged_df <- cbind(columns_chimeric[1], columns[1], columns_chimeric[2], columns[2], columns_chimeric[3], columns[3], columns_chimeric[4], columns[4])
 colnames(merged_df) <- c("C1_CHIMERIC", "C1_NOTCHIMERIC", "C2_CHIMERIC", "C2_NOTCHIMERIC", "K1_CHIMERIC", "K1_NOTCHIMERIC", "K2_CHIMERIC", "K2_NOTCHIMERIC")
 
 #TODO THIS SHOULD JUST BE MRNAS!!!!
 HasCoverage <- rowSums(columns >= 10) == 4
-# HasBoth <- rowSums(columns_chimeric) > 0 & rowSums(not_chimeric) > 0
-# ????
-# table(HasCoverage, HasBoth)
 
 y <- DGEList(counts=merged_df)
 y <- y[HasCoverage,, keep.lib.sizes=FALSE]
@@ -71,8 +68,6 @@ lrt <- glmLRT(fit, coef = "Group2:ChimericNOTCHIMERIC")
 
 df = as.data.frame(topTags(lrt,n=Inf))
 
-## plot!
-
 point_size <- 2
 pval_cutoff <- 0.05
 
@@ -85,6 +80,123 @@ df$Significant[df$logFC < 0 & df$FDR < pval_cutoff] <- "down"
 
 df_not <- df[df$Significant == "none", ]
 df_sig <- df[df$Significant != "none", ]
+
+
+
+
+# ---------- chimeric DE (interaction term between treatment AND chimeric/bulk count, figure 5C)
+# group <- factor(c("control","control","knock-sideways","knock-sideways"))
+# 
+# # create matrix, filter genes with less than 10 reads,
+# # normalize counts by library sizes, estimate dispersion across
+# # replicates (ie handles variability between replicates)
+# y <- DGEList(counts=columns_chimeric, group=group)
+# # y <- y[filterByExpr(y, group=group, min.count=10), , keep.lib.sizes=FALSE]
+# 
+# y$samples$lib.size <- weights
+# y <- calcNormFactors(y)
+# 
+# 
+# design <- model.matrix(~group)
+# y <- estimateDisp(y, design)
+# 
+# # Negative binomial GLM (edge v2)
+# fit <- glmFit(y, design)
+# qlf_nbglm <- glmLRT(fit, coef=2)
+# qlf <- qlf_nbglm
+# 
+# # qlf <- exactTest(y)
+# 
+# # plot!
+# tt = topTags(qlf,n=Inf)
+# df <- as.data.frame(tt)
+# colnames <- c("gene_id", "logFC", "logCPM", "F", "PValue", "FDR")
+# 
+# point_size <- 2
+# 
+# df$Significant <- "none"
+# df$Significant[df$logFC > 0 & df$FDR < 0.05] <- "up"
+# df$Significant[df$logFC < 0 & df$FDR < 0.05] <- "down"
+# 
+# df_not <- df[df$Significant == "none", ]
+# df_sig <- df[df$Significant != "none", ]
+# 
+# p <- ggplot() +
+#   geom_point(data = df_not, aes(x = logCPM, y = logFC), color = "grey", alpha = 1, size = point_size) +
+#   geom_point(data = df_sig, aes(x = logCPM, y = logFC, color = Significant), alpha = 1, size = point_size) +
+#   # geom_hline(yintercept = -log10(0.05), color = "red") +
+#   scale_color_manual(values = c("down" = "blue", "up" = "red", "none" = "gray")) +
+#   geom_point(alpha = 1.0) +
+#   theme_classic(base_size = 20) +
+#   labs(x = "logCPM", y = "logFC") +
+#   geom_hline(yintercept = 0, color = "red") +
+#   theme(legend.position = "none")
+# p
+
+
+
+# ----------  % chimeric before vs % chimeric after KS
+percent_chimeric <- columns_chimeric / columns
+percent_chimeric[is.na(percent_chimeric)] <- 0
+
+weights <- colSums(columns)
+colnames(columns) <- colnames(columns_chimeric)
+labels <- colnames(columns)
+avg_C <- rowSums(percent_chimeric[, c(labels[1], labels[2])] * weights[c(labels[1], labels[2])]) / sum(weights[c(labels[1], labels[2])])
+avg_K <- rowSums(percent_chimeric[, c(labels[3], labels[4])] * weights[c(labels[3], labels[4])]) / sum(weights[c(labels[3], labels[4])])
+result_percent <- data.frame(avg_C = avg_C, avg_K = avg_K)
+
+min_val <- 1e-5
+max_val <- 1 - min_val
+
+result_percent[result_percent == 0] <- min_val
+result_percent[result_percent == 1] <- max_val
+
+result_percent$logit_avg_C <- log(result_percent$avg_C / (1 - result_percent$avg_C))
+result_percent$logit_avg_K <- log(result_percent$avg_K / (1 - result_percent$avg_K))
+
+result_percent$percent_change <- result_percent$avg_K - result_percent$avg_C
+
+signif_df <- data.frame(Significant = df$Significant, row.names = rownames(df))
+# Merge by row names
+result_percent <- merge(result_percent, signif_df, by = "row.names", all.x = TRUE)
+rownames(result_percent) <- result_percent$Row.names
+result_percent$Row.names <- NULL
+
+breaks <- c(min_val, 0.01, 0.5, 0.99, max_val)
+breaks_labels <- breaks
+breaks_labels[c(1, length(breaks_labels))] <- c(0, 1)
+
+HasChimeric <- result_percent$avg_C > min_val | result_percent$avg_K > min_val
+
+result_percent <- result_percent[HasCoverage & HasChimeric,]
+
+df_not_result_percent <- result_percent[result_percent$Significant == "none", ]
+df_sig_result_percent <- result_percent[result_percent$Significant != "none", ]
+
+ggplot() +
+  geom_point(alpha = 1.0) +
+  geom_point(data = df_not_result_percent, aes(x = logit_avg_C, y = logit_avg_K), color = "grey", alpha = 1, size=point_size) +
+  geom_point(data = df_sig_result_percent, aes(x = logit_avg_C, y = logit_avg_K, color = Significant), alpha = 1, size=point_size) +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  # scale_x_continuous(trans = "logit") +
+  scale_x_continuous(
+    breaks = log(breaks /
+                   (1 - breaks)),
+    labels = paste0(breaks_labels * 100, "%")
+  ) +
+  scale_y_continuous(
+    breaks = log(breaks /
+                   (1 - breaks)),
+    labels = paste0(breaks_labels * 100, "%")
+  ) +
+  scale_size_continuous(trans = "log2") +
+  scale_color_manual(values = c("down" = "blue", "up" = "red", "none" = "gray")) +
+  labs(x = "avg_28C", y = "avg_28K") +
+  labs(x = "% chimeric transcripts - control", y = "% chimeric transcripts - knock-sideways") +
+  theme_classic(base_size = 20) +
+  theme(legend.position = "none")
+
 
 # ------------ write files ! ------------ #
 
