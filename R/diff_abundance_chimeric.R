@@ -21,15 +21,6 @@ transcript_columns <- as.numeric(strsplit(args[4], ",")[[1]])
 gaf_file <- args[5]
 out_file <- args[6]
 
-# ---------- interactive
-# chimeric_matrix <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/03_featureCounts_output/subread_featureCounts_results_chimeric.txt"
-# chimeric_columns <- c(1,2,3,4) + 8
-# transcript_matrix <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/03_featureCounts_output/subread_featureCounts_results"
-# transcript_columns <- c(6,7,8,9) + 8
-# 
-# gaf_file <- "/Users/jlevendis/Downloads/Pfalciparum3D7/gaf/PlasmoDB-67_Pfalciparum3D7_GO.gaf"
-# out_file <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/08_Rplots_output/de_chimeric_28hpi.png"
-
 # ---------- chimeric DE (interaction term between treatment AND chimeric/bulk count, figure 5C)
 x_chimeric <- read.delim(chimeric_matrix, header=TRUE, row.names="Geneid")
 x <- read.delim(transcript_matrix, header=TRUE, skip=1, row.names="Geneid")

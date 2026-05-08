@@ -24,8 +24,6 @@ timepoint <- args[2]
 ext = args[3]
 out_dir <- args[4]
 
-# path_all <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/11_single_molecule_analysis_output/single_molecule_m6a_analysis.tsv" 
-
 p_breaks <- c(0, 0.25, 0.5, 0.75, 1.0)
 
 df_all <- read.delim(path_all, header=TRUE)
