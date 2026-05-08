@@ -85,7 +85,7 @@ ggsave(
     dpi = 300                  # resolution, optional (ignored by EPS)
 )
 
-
+write.table(tt, file=paste0(name_no_ext, "_table.txt"))
 
 
 # # GSEA

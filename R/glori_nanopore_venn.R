@@ -151,7 +151,7 @@ p <- as.ggplot(plot(
 
 # Save using ggsave
 ggsave(
-  filename = paste0(name_no_ext, "_intersect_all_timepoints.png"),
+  filename = paste0(name_no_ext, "_intersect_all_timepoints.", ext),
   plot = p,
   width = 6,
   height = 6,
@@ -180,7 +180,7 @@ p <- as.ggplot(plot(
 
 # Save using ggsave
 ggsave(
-  filename = paste0(name_no_ext, "_total_all_timepoints.png"),
+  filename = paste0(name_no_ext, "_total_all_timepoints.", ext),
   plot = p,
   width = 6,
   height = 6,
@@ -214,7 +214,7 @@ p <- as.ggplot(plot(
 
 # Save using ggsave
 ggsave(
-  filename = paste0(name_no_ext, "_sites_nanopore.png"),
+  filename = paste0(name_no_ext, "_sites_nanopore.", ext),
   plot = p,
   width = 6,
   height = 6,
@@ -248,7 +248,7 @@ p <- as.ggplot(plot(
 
 # Save using ggsave
 ggsave(
-  filename = paste0(name_no_ext, "_sites_glori.png"),
+  filename = paste0(name_no_ext, "_sites_glori.", ext),
   plot = p,
   width = 6,
   height = 6,
@@ -282,7 +282,7 @@ p <- ggplot(df, aes(x = "", y = value, fill = category)) +
   theme(legend.position = "none")
 
 ggsave(
-  filename = paste0(name_no_ext, "_sites_nanopore_non_drach.png"),
+  filename = paste0(name_no_ext, "_sites_nanopore_non_drach.", ext),
   plot = p,
   width = 6,
   height = 6,
@@ -313,7 +313,7 @@ p <- ggplot(df, aes(x = "", y = value, fill = category)) +
   theme(legend.position = "none")
 
 ggsave(
-  filename = paste0(name_no_ext, "_sites_glori_non_drach.png"),
+  filename = paste0(name_no_ext, "_sites_glori_non_drach.", ext),
   plot = p,
   width = 6,
   height = 6,

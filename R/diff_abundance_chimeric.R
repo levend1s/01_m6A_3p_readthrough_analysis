@@ -56,7 +56,8 @@ y <- estimateDisp(y, design=design, trend="none")
 fit <- glmFit(y, design)
 lrt <- glmLRT(fit, coef = "groupknocksideways:chimeric_statusnot_chimeric")
 
-df = as.data.frame(topTags(lrt,n=Inf))
+tt = topTags(lrt,n=Inf)
+df = as.data.frame(tt)
 
 point_size <- 2
 pval_cutoff <- 0.01
@@ -174,6 +175,8 @@ df_sig_result_percent <- result_percent[result_percent$Significant != "none", ]
 
 ext <- file_ext(out_file)
 name_no_ext <- file_path_sans_ext(out_file)
+
+write.table(tt, file=paste0(name_no_ext, "_table.txt"))
 
 # md
 p <- ggplot() +
