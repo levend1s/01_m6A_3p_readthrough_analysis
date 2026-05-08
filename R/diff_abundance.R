@@ -19,6 +19,9 @@ gaf_file <- args[3]
 out_file <- args[4]
 
 
+input_file <- "/Users/jlevendis/01_m6A_3p_readthrough_analysis/03_featureCounts_output/subread_featureCounts_results"
+columns_arg <- c(6,7,8,9) + 8
+
 # --- normal DE (Fig 2C)
 count_matrix <- input_file
 x <- read.delim(count_matrix, header=TRUE, skip=1, row.names="Geneid")

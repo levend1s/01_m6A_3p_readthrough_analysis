@@ -3,7 +3,7 @@
 set -e
 
 source ./env.sh
-source ${RQC_DIR}/env/bin/activate
+# source ${RQC_DIR}/env/bin/activate
 
 # INPUTS: 
 # - ${SAMPLE}_to_pfal.50MAPQ.sorted.bam
@@ -85,10 +85,10 @@ awk '$6 != 0 {print $1"\t"$2"\t"$5"\t"$5+1"\t"$3"\t"0"\t"$4}' ${TES_ANALYSIS_DIR
 awk 'NR==1 {print "contig\tID\tstart\tend\ttype\tscore\tstrand"; next} {print}' ${OUTDIR}/28hpi_canonical_pas.tsv > temp.tsv && mv temp.tsv ${OUTDIR}/28hpi_canonical_pas.tsv
 awk 'NR==1 {print "contig\tID\tstart\tend\ttype\tscore\tstrand"; next} {print}' ${OUTDIR}/28hpi_3p_annotation.tsv > temp.tsv && mv temp.tsv ${OUTDIR}/28hpi_3p_annotation.tsv
 
-python3 ${RQC_PATH} calculate_offsets -d 1000 -r ${OUTDIR}/28hpi_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv \
+python3 ${RQC_PATH} calculate_offsets -d 400 -r ${OUTDIR}/28hpi_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv \
     -i m6a ${GLORI_X_NANOPORE_DIR}/nanopore_28u32u36.bed annotation_three_p ${OUTDIR}/28hpi_3p_annotation.tsv
-python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d 1000 -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.eps
-python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d 1000 -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.png
+python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d 400 -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.eps
+python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d 400 -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.png
 
 
 # G: m6A specific analysis
