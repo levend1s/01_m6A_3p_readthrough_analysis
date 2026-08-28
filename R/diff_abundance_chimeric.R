@@ -32,7 +32,9 @@ identical(rownames(x_chimeric), rownames(x))
 
 columns_chimeric <- x_chimeric[,chimeric_columns]
 columns <- x[,transcript_columns]
+
 not_chimeric <- columns - columns_chimeric
+
 
 merged_df <- cbind(columns_chimeric, not_chimeric)
 

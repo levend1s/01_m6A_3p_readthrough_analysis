@@ -2,6 +2,9 @@
 
 source ./env.sh
 
+# get plasmodb fasta
+# wget -e robots=off --cut-dirs=3 -np -nH -r -R "index.html*" https://plasmodb.org/common/downloads/release-68/Pfalciparum3D7/
+
 # check dorado
 # https://github.com/nanoporetech/dorado
 

@@ -24,7 +24,7 @@ OUTDIR=$(pwd)/03_featureCounts_output
 mkdir -p ${OUTDIR}
 
 # Generating featureCounts:
-${FEATURECOUNTS_PATH} -O -s 1 -L -R CORE -a ${ANNOTATION_FILE} -o subread_featureCounts_results \
+${FEATURECOUNTS_PATH} -O -s 1 -L -t CDS --fracOverlapFeature 0.5 -R CORE -a ${ANNOTATION_FILE} -o subread_featureCounts_results \
     ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28C2_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28K1_to_pfal.50MAPQ.sorted.bam \
@@ -52,7 +52,8 @@ for SAMPLE in "${SAMPLES[@]}"; do
 done
 
 # # There are 3 parent types of features in the Plasmodium off file: protein_coding_gene, ncRNA_gene, pseudogene. I'll create a list of all gene IDs with the following commands:
-awk '$3=="protein_coding_gene" || $3=="ncRNA_gene" || $3=="pseudogene" {split($9,x,/[=;]/); print x[2]}' ${ANNOTATION_FILE} > ${OUTDIR}/combined_overlap_counts.txt
+# awk '$3=="protein_coding_gene" || $3=="ncRNA_gene" || $3=="pseudogene" {split($9,x,/[=;]/); print x[2]}' ${ANNOTATION_FILE} > ${OUTDIR}/combined_overlap_counts.txt
+awk 'NR>2 {print $1}' ${OUTDIR}/subread_featureCounts_results > ${OUTDIR}/combined_overlap_counts.txt
 
 awk '$3=="protein_coding_gene" {split($9,x,/[=;]/); print x[2]}' ${ANNOTATION_FILE} > ${OUTDIR}/mRNA_ids.txt
 

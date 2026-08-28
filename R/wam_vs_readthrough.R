@@ -62,6 +62,8 @@ cor_val <- cor(target_df_28$wam_diff, target_df_28$tes_diff, method = "pearson")
 
 nrows <- nrow(target_df_28)
 
+print(df_28)
+
 p <- ggplot(target_df_28, aes(x = wam_diff, y = tes_diff)) +
   geom_point(size=1) +
   theme_classic(base_size = 20) +
