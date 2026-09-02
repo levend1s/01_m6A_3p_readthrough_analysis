@@ -16,15 +16,11 @@ set -e
 # Define all sample names here
 SAMPLES=("28C1" "28C2" "28K1" "28K2" "32C1" "32C2" "32K1" "32K2" "36C1" "36C2" "36K1" "36K2")
 
-THRESHOLD=0.95
-TYPE="a" 
-PERCENT_CUTOFF=0 
-
 OUTDIR=$(pwd)/03_featureCounts_output
 mkdir -p ${OUTDIR}
 
 # Generating featureCounts:
-${FEATURECOUNTS_PATH} -O -s 1 -L -t CDS --fracOverlapFeature 0.5 -R CORE -a ${ANNOTATION_FILE} -o subread_featureCounts_results \
+${FEATURECOUNTS_PATH} -O -s 1 -L -t CDS --minOverlap 100 -R CORE -a ${ANNOTATION_FILE} -o subread_featureCounts_results \
     ${FILTERED_BAMDIR}/28C1_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28C2_to_pfal.50MAPQ.sorted.bam \
     ${FILTERED_BAMDIR}/28K1_to_pfal.50MAPQ.sorted.bam \

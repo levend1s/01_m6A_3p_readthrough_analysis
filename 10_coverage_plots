@@ -88,10 +88,10 @@ mkdir -p ${OUTDIR}
 # seqkit locate -p "A" ${ANNOTATION_FILE} --bed | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,"a",0,$6}' | sort -k1,1 -k2,2n > ${OUTDIR}/all_A_positions.bed
 
 ENRICHMENT_WINDOW=1000
-# python3 ${RQC_PATH} calculate_offsets -s -d ${ENRICHMENT_WINDOW} -r ${OUTDIR}/28hpi_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv \
-#     -i m6a ${GLORI_X_NANOPORE_DIR}/nanopore_28u32u36.bed annotation_three_p ${OUTDIR}/28hpi_3p_annotation.tsv background_adenosines ${OUTDIR}/all_A_positions.bed
-# python3 ${RQC_PATH} calculate_offsets -s -d ${ENRICHMENT_WINDOW} -r ${OUTDIR}/28hpi_3p_annotation.tsv -o ${OUTDIR}/canonical_pas_m6a_offsets_from_3p.tsv \
-#     -i m6a ${GLORI_X_NANOPORE_DIR}/nanopore_28u32u36.bed canonical_pas ${OUTDIR}/28hpi_canonical_pas.tsv background_adenosines ${OUTDIR}/all_A_positions.bed
+python3 ${RQC_PATH} calculate_offsets -s -d ${ENRICHMENT_WINDOW} -r ${OUTDIR}/28hpi_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv \
+    -i m6a ${GLORI_X_NANOPORE_DIR}/nanopore_28u32u36.bed annotation_three_p ${OUTDIR}/28hpi_3p_annotation.tsv background_adenosines ${OUTDIR}/all_A_positions.bed
+python3 ${RQC_PATH} calculate_offsets -s -d ${ENRICHMENT_WINDOW} -r ${OUTDIR}/28hpi_3p_annotation.tsv -o ${OUTDIR}/canonical_pas_m6a_offsets_from_3p.tsv \
+    -i m6a ${GLORI_X_NANOPORE_DIR}/nanopore_28u32u36.bed canonical_pas ${OUTDIR}/28hpi_canonical_pas.tsv background_adenosines ${OUTDIR}/all_A_positions.bed
 # python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d ${ENRICHMENT_WINDOW} -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.eps
 python3 ${RQC_PATH} plot_relative_distance -l "canonical PA" -d ${ENRICHMENT_WINDOW} -i ${OUTDIR}/3p_m6a_offsets_from_canonical_pas.tsv -o ${OUTDIR}/3p_m6a_offsets.png --foreground "m6a" --background background_adenosines
 python3 ${RQC_PATH} plot_relative_distance -l "annotation_three_p" -d ${ENRICHMENT_WINDOW} -i ${OUTDIR}/canonical_pas_m6a_offsets_from_3p.tsv -o ${OUTDIR}/3p_m6a_offsets.png --foreground "m6a" --background background_adenosines

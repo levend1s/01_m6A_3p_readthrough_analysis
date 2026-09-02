@@ -32,6 +32,9 @@ name_no_ext <- file_path_sans_ext(out_file)
 # 
 
 x <- read.delim(count_matrix, header=TRUE, row.names="Geneid")
+x <- x[ !grepl("API|MIT", rownames(x), ignore.case = TRUE), , drop = FALSE ]
+
+
 row_names <- c("28C1", "28C2", "28K1", "28K2", "32C1", "32C2", "32K1", "32K2", "36C1", "36C2", "36K1", "36K2")
 colnames(x) <- row_names
 columns <- x
@@ -42,7 +45,8 @@ time  <- factor(rep(c("28","32","36"), each=4))
 # normalize counts by library sizes, estimate dispersion across
 # replicates (ie handles variability between replicates)
 y <- DGEList(counts=columns, group=group)
-y <- y[filterByExpr(y, group=group, min.count=10), , keep.lib.sizes=FALSE]
+# y <- y[filterByExpr(y, group=group, min.count=10), , keep.lib.sizes=FALSE]
+
 y <- calcNormFactors(y)
 design <- model.matrix(~group*time)
 y <- estimateDisp(y, design)
@@ -69,15 +73,6 @@ data <- logCPM
 # num_clusters <- 6
 row_names <- colnames(logCPM)
 method <- "chimeric count"
-
-
-
-
-
-
-
-
-
 
 
 # ---------- PLOT PCA 
@@ -343,6 +338,8 @@ clean_descs[is.na(clean_descs)] <- "unknown function"
 
 loadings$description <- clean_descs[loadings$gene]
 
+loadings["PF3D7_0518300", ]
+loadings["PF3D7_1439600", ]
 
 pca_scatter_plot <- ggplot(loadings, aes_string(x = pcx, y = pcy)) +
   geom_hline(yintercept = 0, color = "pink") + geom_vline(xintercept = 0, color = "pink") +
