@@ -130,14 +130,9 @@ all_pc2_genes <- sort(abs(loadings[,2]), decreasing=TRUE)
 
 names(all_pc1_genes) <- sub("\\.[0-9]+$", "", names(all_pc1_genes))
 all_pc1_genes <- all_pc1_genes[!duplicated(names(all_pc1_genes))]
-
-# Don't really care about PC2 cause it's not the main separator
-top_PC2_genes <- names(sort(abs(loadings[,2]), decreasing=TRUE)[1:num_top_genes])
-
 gois <- top_PC1_genes
-# gois <- top_PC2_genes
 
-# ---------- Print KEGG descriptions
+# HEATMAP PC1 ---------- Print KEGG descriptions
 gois_clean <- sub("\\.[0-9]+$", "", gois)
 gene_descriptions <- sapply(gois_clean, function(gene) {
   entry <- tryCatch(
@@ -184,11 +179,72 @@ heatmap_plot <- pheatmap(data[gois,],
          show_colnames=TRUE,
          # main=paste0("PCA1 top ", num_top_genes, " contributing genes (", method, ")"),
          cluster_cols = FALSE,
-         cluster_rows = FALSE,
+         cluster_rows = TRUE,
+         cellwidth = 12,
+         cellheight = 12,
          labels_row = clean_descs)
 
 # export 900x1000
-ggsave(filename=paste0(name_no_ext, "_heatmap.", ext), plot = heatmap_plot, device=ext, dpi=300, width=9, height=10, units="in")
+ggsave(filename=paste0(name_no_ext, "_heatmap_pc1.", ext), plot = heatmap_plot, device=ext, dpi=300, width=11, height=10, units="in")
+
+#  HEATMAP PC2 ---------- Print KEGG descriptions
+# Don't really care about PC2 cause it's not the main separator
+top_PC2_genes <- names(sort(abs(loadings[,2]), decreasing=TRUE)[1:num_top_genes])
+gois_2 <- top_PC2_genes
+
+gois_2_clean <- sub("\\.[0-9]+$", "", gois_2)
+gene_descriptions <- sapply(gois_2_clean, function(gene) {
+  entry <- tryCatch(
+    keggGet(paste0("pfa:", gene)),
+    error = function(e) return(NULL)
+  )
+  if (!is.null(entry) && length(entry) > 0) {
+    return(entry[[1]]$NAME)
+  } else {
+    return(NA)
+  }
+})
+
+# Create a data frame for easier viewing
+desc_df <- data.frame(
+  GeneID = gois_2_clean,
+  Description = gene_descriptions
+)
+print(desc_df)
+clean_descs <- sub("(RefSeq) ", "", desc_df[,2], fixed = TRUE)
+clean_descs[grepl("unknown function", clean_descs, ignore.case = TRUE)] <- "unknown function"
+clean_descs[is.na(clean_descs)] <- "unknown function"
+
+#  HEATMAP PC2 ---------- PLOT HEATMAP (gene methylation %) of TOP LOADINGS FOR PC2 
+annotation_col <- data.frame(
+  Group = group,
+  Time  = time
+)
+rownames(annotation_col) <- row_names
+annotation_col$Group <- factor(annotation_col$Group)
+annotation_col$Time  <- factor(annotation_col$Time)
+
+# Optional colors for annotation
+annotation_colors <- list(
+  Group = c(control="#1bb6bb", knocksideways="#f46b64"),
+  Time  = c("28"="gray", "32"="orange", "36"="green")
+)
+
+heatmap_plot <- pheatmap(data[gois_2,],
+         scale="row",               # z-score by gene
+         # annotation_col=annotation_col,
+         # annotation_colors=annotation_colors,
+         show_rownames=TRUE,
+         show_colnames=TRUE,
+         # main=paste0("PCA1 top ", num_top_genes, " contributing genes (", method, ")"),
+         cluster_cols = FALSE,
+         cluster_rows = TRUE,
+         cellwidth = 12,
+         cellheight = 12,
+         labels_row = clean_descs)
+
+# export 900x1000
+ggsave(filename=paste0(name_no_ext, "_heatmap_pc2.", ext), plot = heatmap_plot, device=ext, dpi=300, width=11, height=10, units="in")
 
 
 # ---------- KEGG analysis
